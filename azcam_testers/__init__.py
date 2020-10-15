@@ -2,26 +2,6 @@
 Creates tester objects.
 """
 
-__all__ = [
-    "detchar",
-    "bias",
-    "dark",
-    "defects",
-    "detcal",
-    "eper",
-    "fe55",
-    "gain",
-    "linearity",
-    "metrology",
-    "pocketpump",
-    "prnu",
-    "ptc",
-    "qe",
-    "ramp",
-    "superflat",
-    "report",
-]
-
 from .detchar import DetChar
 from .bias import Bias
 from .dark import Dark

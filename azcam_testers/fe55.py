@@ -12,7 +12,7 @@ import scipy.optimize
 from azcam.console import azcam
 from azcam.functions.fits import pyfits
 import azcam_testers
-from azcam_testers.basetester import Tester
+from .basetester import Tester
 
 # constants
 CON1 = 2.0 * numpy.sqrt(2.0 * numpy.log(2.0))  # 2.355 for sigma <=> FWHM

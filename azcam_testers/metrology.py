@@ -8,7 +8,7 @@ import scipy.optimize
 import numpy
 
 from azcam.console import azcam
-from azcam_testers.basetester import Tester
+from .basetester import Tester
 
 
 class Metrology(Tester):

@@ -2,7 +2,7 @@ import numpy
 
 from azcam.console import azcam
 from azcam.functions.fits import pyfits
-from azcam_testers.basetester import Tester
+from .basetester import Tester
 
 
 class Eper(Tester):

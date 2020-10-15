@@ -4,7 +4,7 @@ import shutil
 
 from azcam.console import azcam
 import azcam_testers
-from azcam_testers.basetester import Tester
+from .basetester import Tester
 
 
 class Defects(Tester):

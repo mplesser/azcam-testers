@@ -43,6 +43,7 @@ class Tester(Report):
 
         self.fit_order = 3  # fit order for overscan correction
 
+        # add to .api and directly as CLI command
         setattr(azcam.api, self.id, self)
         azcam.db.cli_cmds[self.id] = self
 

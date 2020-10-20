@@ -2,6 +2,11 @@ from setuptools import setup, find_packages
 
 requirements = [
     "azcam",
+    "numpy",
+    "scipy",
+    "PyPDF2",
+    "pdfkit",
+    "markdown",
 ]
 
 

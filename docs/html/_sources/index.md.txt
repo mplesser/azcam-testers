@@ -14,3 +14,13 @@ See https://mplesser.github.io/azcam-testers/
    testers
 ```
 
+### Report Commands
+
+The report commands are helpful when generating reports. 
+    
+```eval_rst
+.. toctree::
+   :maxdepth: 1
+
+   report
+```

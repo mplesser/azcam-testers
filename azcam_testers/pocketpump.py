@@ -94,7 +94,9 @@ class PocketPump(Tester):
         # pocket pump
         azcam.log("Pocket pumping...")
         for _ in range(self.number_cycles):
-            azcam.api.parshift(-1 * self.shift_rows)  # reverse par shift is a complete cycle
+            azcam.api.parshift(
+                -1 * self.shift_rows
+            )  # reverse par shift is a complete cycle
 
         # readout
         azcam.log("Readout")
@@ -117,7 +119,9 @@ class PocketPump(Tester):
         # take a reference flat of same time
         azcam.log("Taking non-pumped reference exposure")
         try:
-            azcam.api.expose(self.exposure_time, self.exposure_type, "pocket pump reference flat")
+            azcam.api.expose(
+                self.exposure_time, self.exposure_type, "pocket pump reference flat"
+            )
 
         except Exception as message:
             azcam.api.set_par("TimingFile", timingfile_org)

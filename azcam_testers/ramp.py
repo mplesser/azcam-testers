@@ -195,7 +195,9 @@ class Ramp(Tester):
             sdevs = []
             for row in range(nrows):
                 roi = [self.first_col - 1, self.last_col, row, row + 1]
-                sdev = data_ffci[ext][roi[2] : roi[3]][roi[0] : roi[1]].std() / math.sqrt(2.0)
+                sdev = data_ffci[ext][roi[2] : roi[3]][
+                    roi[0] : roi[1]
+                ].std() / math.sqrt(2.0)
                 fmean = data_mean[ext][roi[2] : roi[3]][roi[0] : roi[1]].mean()
                 sdevs.append(sdev)
                 means.append(fmean)
@@ -252,7 +254,12 @@ class Ramp(Tester):
             fontsize=bigfont,
         )
         f1.subplots_adjust(
-            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
+            left=pleft,
+            bottom=pbottom,
+            right=pright,
+            top=ptop,
+            wspace=wspace,
+            hspace=hspace,
         )
         fig1 = azcam.plot.plt.subplot(1, 1, 1)
         fig1.xaxis.grid(1, which="both")  # log lines
@@ -272,10 +279,19 @@ class Ramp(Tester):
         fig2 = azcam.plot.plt.figure(2)
         fig2.clf()  # clear old data
         fig2.text(
-            0.5, 0.93, r"$\rm{Ramp\ System\ Gain}$", horizontalalignment="center", fontsize=bigfont,
+            0.5,
+            0.93,
+            r"$\rm{Ramp\ System\ Gain}$",
+            horizontalalignment="center",
+            fontsize=bigfont,
         )
         fig2.subplots_adjust(
-            left=pleft, bottom=pbottom, right=pright, top=0.83, wspace=wspace, hspace=hspace,
+            left=pleft,
+            bottom=pbottom,
+            right=pright,
+            top=0.83,
+            wspace=wspace,
+            hspace=hspace,
         )
 
         # ax1 is mean at bottom, ax2 is row number on top
@@ -315,13 +331,19 @@ class Ramp(Tester):
             azcam.plot.plt.figure(1)
             if self.logplot:
                 azcam.plot.plt.loglog(
-                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
+                    m,
+                    sdev,
+                    plotstyle[chan % self.num_chans],
+                    markersize=marksize,
                 )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1, 100000)
             else:
                 azcam.plot.plt.plot(
-                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
+                    m,
+                    sdev,
+                    plotstyle[chan % self.num_chans],
+                    markersize=marksize,
                 )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)

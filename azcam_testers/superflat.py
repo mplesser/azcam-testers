@@ -70,7 +70,9 @@ class Superflat(Tester):
 
             meanelectrons = azcam.api.detcal.mean_electrons
 
-            self.exposure_times = numpy.array(self.exposure_levels) / meanelectrons[wave]
+            self.exposure_times = (
+                numpy.array(self.exposure_levels) / meanelectrons[wave]
+            )
         elif len(self.exposure_times) > 0:
             azcam.log("Using ExposureTimes")
         else:
@@ -81,7 +83,9 @@ class Superflat(Tester):
             azcam.api.set_par("imageroot", "superflat.")  # for automatic data analysis
             azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
             azcam.api.set_par("imageautoname", 0)  # manually set name
-            azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+            azcam.api.set_par(
+                "imageautoincrementsequencenumber", 1
+            )  # inc sequence numbers
             azcam.api.set_par("imagetest", 0)  # turn off TestImage
 
             # create new subfolder
@@ -161,7 +165,9 @@ class Superflat(Tester):
                 azcam.fits.colbias(nextfile, fit_order=self.fit_order)
 
             SequenceNumber = SequenceNumber + 1
-            nextfile = os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
+            nextfile = (
+                os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
+            )
             loop += 1
 
         # median combine all images
@@ -200,7 +206,9 @@ class Superflat(Tester):
             shutil.copy(self.superflat_filename, startingfolder)
             shutil.copy(self.scaled_superflat_filename, startingfolder)
             shutil.copy("superflatimage.png", startingfolder)
-            self.superflat_filename = os.path.join(startingfolder, self.superflat_filename)
+            self.superflat_filename = os.path.join(
+                startingfolder, self.superflat_filename
+            )
             self.scaled_superflat_filename = os.path.join(
                 startingfolder, self.scaled_superflat_filename
             )

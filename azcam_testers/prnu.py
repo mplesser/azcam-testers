@@ -85,8 +85,12 @@ class Prnu(Tester):
                 wave = int(wave)
                 azcam.log(f"Current wavelength: {wave}")
             filename = os.path.basename(azcam.api.get_image_filename())
-            azcam.log(f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm")
-            azcam.api.expose(exposuretime, self.exposure_type, f"PRNU image {wavelength:.1f} nm")
+            azcam.log(
+                f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm"
+            )
+            azcam.api.expose(
+                exposuretime, self.exposure_type, f"PRNU image {wavelength:.1f} nm"
+            )
 
         # finish
         azcam.api.restore_imagepars(impars, currentfolder)
@@ -117,7 +121,9 @@ class Prnu(Tester):
             for filename in glob.glob(os.path.join(startingfolder, "*.fits")):
                 shutil.copy(filename, subfolder)
 
-            azcam.utils.curdir(subfolder)  # move for analysis folder - assume it already exists
+            azcam.utils.curdir(
+                subfolder
+            )  # move for analysis folder - assume it already exists
         else:
             subfolder = startingfolder
 
@@ -157,7 +163,8 @@ class Prnu(Tester):
                 if wavelength not in self.wavelengths:
                     SequenceNumber = SequenceNumber + 1
                     nextfile = (
-                        os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
+                        os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
+                        + ".fits"
                     )
                     continue
             except Exception:
@@ -188,7 +195,8 @@ class Prnu(Tester):
             if self.use_edge_mask:
                 if azcam.api.defects.valid:
                     self.MaskedImage = numpy.ma.masked_where(
-                        azcam.api.defects.defects_mask, prnuimage.buffer,
+                        azcam.api.defects.defects_mask,
+                        prnuimage.buffer,
                     )
                 else:
                     azcam.api.defects.make_edge_mask(
@@ -214,11 +222,18 @@ class Prnu(Tester):
 
             self.grades[wavelength] = GRADE
 
-            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (wavelength, prnu * 100, GRADE,)
+            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (
+                wavelength,
+                prnu * 100,
+                GRADE,
+            )
             azcam.log(s)
 
             SequenceNumber = SequenceNumber + 1
-            nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
+            nextfile = (
+                os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
+                + ".fits"
+            )
 
         if "FAIL" in list(self.grades.values()):
             self.grade = "FAIL"

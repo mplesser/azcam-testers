@@ -2,11 +2,12 @@
 Creates tester objects.
 """
 
-from .detchar import DetChar
+from . import report
 from .bias import Bias
 from .dark import Dark
 from .defects import Defects
 from .detcal import DetCal
+from .detchar import DetChar
 from .eper import Eper
 from .fe55 import Fe55
 from .gain import Gain
@@ -18,8 +19,6 @@ from .ptc import Ptc
 from .qe import Qe
 from .ramp import Ramp
 from .superflat import Superflat
-
-from . import report
 
 # create instances of all testers
 detchar = DetChar()

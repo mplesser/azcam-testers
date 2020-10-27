@@ -1,6 +1,7 @@
 import json
 
 import azcam
+
 from .report import Report
 
 

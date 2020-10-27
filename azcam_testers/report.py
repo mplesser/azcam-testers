@@ -5,9 +5,9 @@ Report generation class.
 import os
 import subprocess
 
-from PyPDF2 import PdfFileMerger, PdfFileReader
 import pdfkit
 from markdown import markdown
+from PyPDF2 import PdfFileMerger, PdfFileReader
 
 
 class Report(object):

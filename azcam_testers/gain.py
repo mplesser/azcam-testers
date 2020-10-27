@@ -1,12 +1,13 @@
 import math
-import shutil
 import os
+import shutil
 
+import azcam_testers
 import numpy
 
 from azcam.console import azcam
 from azcam.functions.fits import pyfits
-import azcam_testers
+
 from .basetester import Tester
 
 

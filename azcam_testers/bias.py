@@ -3,6 +3,7 @@ import shutil
 import time
 
 from azcam.console import azcam
+
 from .basetester import Tester
 
 

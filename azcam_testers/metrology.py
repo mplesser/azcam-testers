@@ -2,12 +2,13 @@ import os
 import shlex
 
 import matplotlib.pylab as pylab
+import numpy
+import scipy.optimize
 from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import griddata
-import scipy.optimize
-import numpy
 
 from azcam.console import azcam
+
 from .basetester import Tester
 
 

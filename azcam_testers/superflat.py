@@ -1,11 +1,12 @@
-import os
 import glob
+import os
 import shutil
 
+import azcam_testers
 import numpy
 
 from azcam.console import azcam
-import azcam_testers
+
 from .basetester import Tester
 
 

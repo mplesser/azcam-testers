@@ -1,7 +1,9 @@
 import os
 
-from azcam.console import azcam
 import azcam_testers
+
+from azcam.console import azcam
+
 from .basetester import Tester
 
 

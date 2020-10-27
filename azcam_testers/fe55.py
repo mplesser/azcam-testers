@@ -1,9 +1,10 @@
 import glob
 import math
-import warnings
 import os
 import shutil
+import warnings
 
+import azcam_testers
 import numpy
 import scipy.ndimage
 import scipy.ndimage.filters
@@ -11,7 +12,7 @@ import scipy.optimize
 
 from azcam.console import azcam
 from azcam.functions.fits import pyfits
-import azcam_testers
+
 from .basetester import Tester
 
 # constants

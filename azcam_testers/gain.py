@@ -83,7 +83,7 @@ class Gain(Tester):
         azcam.log("Acquiring gain sequence")
 
         if self.exposure_time == -1:
-            ExposureTime = azcam.api.get_exposuretime()
+            ExposureTime = azcam.api.exposure.get_exposuretime()
             azcam.log(
                 f"Exposure time not specified, using current value of {ExposureTime:0.3f}"
             )
@@ -99,60 +99,60 @@ class Gain(Tester):
             if os.path.exists("gain"):
                 shutil.rmtree("gain")
         currentfolder, subfolder = azcam.utils.make_file_folder("gain")
-        azcam.api.set_par("imagefolder", subfolder)
+        azcam.api.exposure.set_par("imagefolder", subfolder)
 
         self.imagefolder = subfolder
 
-        azcam.api.set_par("imageincludesequencenumber", 1)
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
-        azcam.api.set_par("imageoverwrite", 1)
+        azcam.api.exposure.set_par("imageincludesequencenumber", 1)
+        azcam.api.exposure.set_par("imageautoincrementsequencenumber", 1)
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageoverwrite", 1)
 
         # clear device
         if self.clear_arrray:
-            azcam.api.tests()
+            azcam.api.exposure.tests()
 
         # set wavelength
         if self.wavelength > 0:
             wave = int(self.wavelength)
-            wave1 = azcam.api.get_wavelength()
+            wave1 = azcam.api.instrument.get_wavelength()
             wave1 = int(wave1)
             if wave1 != wave:
                 azcam.log(f"Setting wavelength to {wave} nm")
-                azcam.api.set_wavelength(wave)
-                wave1 = azcam.api.get_wavelength()
+                azcam.api.instrument.set_wavelength(wave)
+                wave1 = azcam.api.instrument.get_wavelength()
                 wave1 = int(wave1)
             azcam.log(f"Current wavelength is {wave1} nm")
 
-        azcam.api.set_par("imageroot", "ptc.")
+        azcam.api.exposure.set_par("imageroot", "ptc.")
         for loop in range(self.number_pairs):
 
             if self.number_pairs > 1:
                 azcam.log(f"Starting gain sequence {loop + 1}/{self.number_pairs}")
 
             # bias image
-            azcam.api.set_par("imagetype", "zero")
-            zerofilename = azcam.api.get_image_filename()
+            azcam.api.exposure.set_par("imagetype", "zero")
+            zerofilename = azcam.api.exposure.get_image_filename()
             self.image_zero = zerofilename
             azcam.log("Taking bias exposure")
-            azcam.api.expose(0, "zero", "PTC bias")
+            azcam.api.exposure.expose(0, "zero", "PTC bias")
 
             # take dark
             if self.include_dark_images:
-                self.dark_frame = azcam.api.get_image_filename()
-                azcam.api.expose(ExposureTime, "dark", "PTC dark")
+                self.dark_frame = azcam.api.exposure.get_image_filename()
+                azcam.api.exposure.expose(ExposureTime, "dark", "PTC dark")
 
             # take flats
-            azcam.api.set_par("imagetype", self.exposure_type)
+            azcam.api.exposure.set_par("imagetype", self.exposure_type)
             azcam.log(f"Taking two flats for {ExposureTime:0.3f} seconds")
-            flat1filename = azcam.api.get_image_filename()
+            flat1filename = azcam.api.exposure.get_image_filename()
             self.image_flat1 = flat1filename
-            azcam.api.expose(ExposureTime, self.exposure_type, "PTC frame 1")
+            azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 1")
             azcam.log("Image 1 finished")
-            flat2filename = azcam.api.get_image_filename()
+            flat2filename = azcam.api.exposure.get_image_filename()
             self.image_flat2 = flat2filename
-            azcam.api.expose(ExposureTime, self.exposure_type, "PTC frame 2")
+            azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 2")
             azcam.log("Image 2 finished")
 
         # finish

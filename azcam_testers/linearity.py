@@ -79,22 +79,28 @@ class Linearity(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("linearity")
-        azcam.api.set_par("imagefolder", newfolder)
+        azcam.api.exposure.set_par("imagefolder", newfolder)
 
-        azcam.api.set_par("imageroot", "linearity.")  # for automatic data analysis
-        azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par(
+            "imageroot", "linearity."
+        )  # for automatic data analysis
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
         azcam.log(
             "Taking Linearity bias: %s"
-            % os.path.basename(azcam.api.get_image_filename())
+            % os.path.basename(azcam.api.exposure.get_image_filename())
         )
-        azcam.api.expose(0, "zero", "Linearity bias")
+        azcam.api.exposure.expose(0, "zero", "Linearity bias")
 
-        azcam.api.set_par("imagetype", self.exposure_type)
+        azcam.api.exposure.set_par("imagetype", self.exposure_type)
 
         # Try exposure_level to get ExposureTime
         if len(self.exposure_levels) > 0:  # exposure_levels specified
@@ -108,7 +114,7 @@ class Linearity(Tester):
                     meanelectrons = azcam.api.detcal.mean_electrons
 
                     if self.wavelength == -1:
-                        wave = azcam.api.get_wavelength()
+                        wave = azcam.api.instrument.get_wavelength()
                         wave = int(wave)
                         self.exposure_times = (
                             numpy.array(self.exposure_levels) / meanelectrons[wave]
@@ -146,10 +152,10 @@ class Linearity(Tester):
                     exp + 1,
                     NumberExposures,
                     exptime,
-                    os.path.basename(azcam.api.get_image_filename()),
+                    os.path.basename(azcam.api.exposure.get_image_filename()),
                 )
             )
-            azcam.api.expose(exptime, self.exposure_type, "Linearity flat")
+            azcam.api.exposure.expose(exptime, self.exposure_type, "Linearity flat")
 
         # finish
         azcam.api.restore_imagepars(impars, currentfolder)

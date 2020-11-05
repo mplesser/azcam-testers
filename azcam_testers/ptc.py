@@ -87,48 +87,52 @@ class Ptc(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("ptc")
-        azcam.api.set_par("imagefolder", newfolder)
+        azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
         # set wavelength
         if self.wavelength > 0:
             wave = int(self.wavelength)
-            wave1 = azcam.api.get_wavelength()
+            wave1 = azcam.api.instrument.get_wavelength()
             wave1 = int(wave1)
             if wave1 != wave:
                 azcam.log(f"Setting wavelength to {wave} nm")
-                azcam.api.set_wavelength(wave)
-                wave1 = azcam.api.get_wavelength()
+                azcam.api.instrument.set_wavelength(wave)
+                wave1 = azcam.api.instrument.get_wavelength()
                 wave1 = int(wave1)
             azcam.log(f"Current wavelength is {wave1} nm")
 
-        azcam.api.set_par("imageroot", "ptc.")  # for automatic data analysis
-        azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageroot", "ptc.")  # for automatic data analysis
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
-        azcam.api.set_par("imagetype", "zero")
-        filename = os.path.basename(azcam.api.get_image_filename())
+        azcam.api.exposure.set_par("imagetype", "zero")
+        filename = os.path.basename(azcam.api.exposure.get_image_filename())
         azcam.log("Taking PTC bias: %s" % filename)
 
         # measure the reference diode current with shutter closed
         if self.use_ref_diode:
-            dc = azcam.api.get_current(0, 0)
+            dc = azcam.api.instrument.get_current(0, 0)
             azcam.api.set_keyword(
                 "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
             )
 
-        azcam.api.expose(0, "zero", "PTC bias")
+        azcam.api.exposure.expose(0, "zero", "PTC bias")
 
         # determine ExposureTimes
         if azcam.api.detcal.valid and len(self.exposure_levels) > 0:
             azcam.log("Using exposure_levels")
             if self.wavelength == -1:
-                wave = azcam.api.get_wavelength()
+                wave = azcam.api.instrument.get_wavelength()
                 wave = int(wave)
             else:
                 wave = self.wavelength
@@ -156,12 +160,12 @@ class Ptc(Tester):
             raise azcam.AzcamError("could not determine exposure times")
 
         # loop through pairs
-        azcam.api.set_par("imagetype", self.exposure_type)
+        azcam.api.exposure.set_par("imagetype", self.exposure_type)
         number_pairs = len(self.exposure_times)
 
         for pair, ExposureTime in enumerate(self.exposure_times):
 
-            filename = os.path.basename(azcam.api.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_image_filename())
             azcam.log(
                 "Taking PTC pair %d of %d for %.3f secs"
                 % (pair + 1, number_pairs, ExposureTime)
@@ -169,25 +173,25 @@ class Ptc(Tester):
 
             # measure the reference diode current
             if self.use_ref_diode:
-                dc = azcam.api.get_current(0, 1)
+                dc = azcam.api.instrument.get_current(0, 1)
                 azcam.api.set_keyword(
                     "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
                 )
 
             # make exposure
             if self.flush_before_exposure:
-                azcam.api.tests()
-            azcam.api.expose(ExposureTime, self.exposure_type, "PTC frame 1")
-            filename = os.path.basename(azcam.api.get_image_filename())
+                azcam.api.exposure.tests()
+            azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 1")
+            filename = os.path.basename(azcam.api.exposure.get_image_filename())
 
             # measure the reference diode current
             if self.use_ref_diode:
-                dc = azcam.api.get_current(0, 1)
+                dc = azcam.api.instrument.get_current(0, 1)
                 azcam.api.set_keyword(
                     "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
                 )
 
-            azcam.api.expose(ExposureTime, self.exposure_type, "PTC frame 2")
+            azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 2")
 
         # close
         try:

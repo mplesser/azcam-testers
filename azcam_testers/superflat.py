@@ -51,17 +51,17 @@ class Superflat(Tester):
         currentfolder = azcam.utils.curdir()
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
         # set wavelength
         if self.wavelength > 0:
             wave = int(self.wavelength)
-            wave1 = azcam.api.get_wavelength()
+            wave1 = azcam.api.instrument.get_wavelength()
             wave1 = int(wave1)
             if wave1 != wave:
                 azcam.log(f"Setting wavelength to {wave} nm")
-                azcam.api.set_wavelength(wave)
-                wave1 = azcam.api.get_wavelength()
+                azcam.api.instrument.set_wavelength(wave)
+                wave1 = azcam.api.instrument.get_wavelength()
                 wave1 = int(wave1)
             azcam.log(f"Current wavelength is {wave1} nm")
 
@@ -81,17 +81,21 @@ class Superflat(Tester):
 
         for setnum, exposuretime in enumerate(self.exposure_times):
 
-            azcam.api.set_par("imageroot", "superflat.")  # for automatic data analysis
-            azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-            azcam.api.set_par("imageautoname", 0)  # manually set name
-            azcam.api.set_par(
+            azcam.api.exposure.set_par(
+                "imageroot", "superflat."
+            )  # for automatic data analysis
+            azcam.api.exposure.set_par(
+                "imageincludesequencenumber", 1
+            )  # use sequence numbers
+            azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+            azcam.api.exposure.set_par(
                 "imageautoincrementsequencenumber", 1
             )  # inc sequence numbers
-            azcam.api.set_par("imagetest", 0)  # turn off TestImage
+            azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
             # create new subfolder
             currentfolder, newfolder = azcam.utils.make_file_folder("superflat", 1, 1)
-            azcam.api.set_par("imagefolder", newfolder)
+            azcam.api.exposure.set_par("imagefolder", newfolder)
 
             for loop in range(self.number_images_acquire[setnum]):
                 exposuretime = self.exposure_times[setnum]
@@ -100,7 +104,9 @@ class Superflat(Tester):
                     "Taking SuperFlat image %d of %d for %.3f seconds"
                     % (loop + 1, self.number_images_acquire[setnum], exposuretime)
                 )
-                azcam.api.expose(exposuretime, self.exposure_type, "superflat flat")
+                azcam.api.exposure.expose(
+                    exposuretime, self.exposure_type, "superflat flat"
+                )
 
             # finish this set
             azcam.api.restore_imagepars(impars, currentfolder)

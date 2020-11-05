@@ -116,16 +116,20 @@ class Fe55(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("fe55")
-        azcam.api.set_par("imagefolder", newfolder)
+        azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
-        azcam.api.set_par("imageroot", "fe55.")  # for automatic data analysis
-        azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageroot", "fe55.")  # for automatic data analysis
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # loop through images
         for imgnum in range(self.number_images_acquire):
@@ -136,19 +140,19 @@ class Fe55(Tester):
             )
 
             # take bias image
-            azcam.api.set_par("imagetype", "zero")
+            azcam.api.exposure.set_par("imagetype", "zero")
             azcam.log("Taking bias image")
-            azcam.api.expose(0, "zero", "bias image")
+            azcam.api.exposure.expose(0, "zero", "bias image")
 
             # take x-ray image
-            azcam.api.set_par("imagetype", "fe55")
+            azcam.api.exposure.set_par("imagetype", "fe55")
             azcam.log("Taking Fe-55 image")
-            azcam.api.expose(self.exposure_time, "fe55", "Fe55 image")
+            azcam.api.exposure.expose(self.exposure_time, "fe55", "Fe55 image")
 
         if self.acquire_darks:
-            azcam.api.set_par("imagetype", "dark")
+            azcam.api.exposure.set_par("imagetype", "dark")
             azcam.log("Taking dark image")
-            azcam.api.expose(self.exposure_time, "dark", "dark image")
+            azcam.api.exposure.expose(self.exposure_time, "dark", "dark image")
 
         # finish
         azcam.api.restore_imagepars(impars, currentfolder)

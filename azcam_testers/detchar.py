@@ -57,7 +57,7 @@ class DetChar(Report):
         azcam.utils.curdir(datestring)
 
         imagefolder = azcam.utils.curdir()
-        azcam.api.set_par("imagefolder", imagefolder)
+        azcam.api.exposure.set_par("imagefolder", imagefolder)
 
         return
 

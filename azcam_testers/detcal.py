@@ -67,13 +67,15 @@ class DetCal(Tester):
             if os.path.exists("detcal"):
                 shutil.rmtree("detcal")
         startingfolder, subfolder = azcam.utils.make_file_folder("detcal")
-        azcam.api.set_par("imagefolder", subfolder)
+        azcam.api.exposure.set_par("imagefolder", subfolder)
         azcam.utils.curdir(subfolder)
 
-        azcam.api.set_par("imageincludesequencenumber", 1)  # don't use sequence numbers
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
-        azcam.api.set_par("imageoverwrite", 1)
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # don't use sequence numbers
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageoverwrite", 1)
 
         # get gain and ROI
         self.system_gain = azcam.api.gain.get_system_gain()
@@ -85,7 +87,7 @@ class DetCal(Tester):
         self.zero_mean = gain.zero_mean
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
         self.mean_counts = {}
         self.mean_electrons = {}
@@ -97,13 +99,13 @@ class DetCal(Tester):
 
             # set wavelength
             wave = int(wave)
-            wave1 = azcam.api.get_wavelength()
+            wave1 = azcam.api.instrument.get_wavelength()
             wave1 = int(wave1)
             if wave1 != wave:
                 azcam.log(f"Setting wavelength to {wave} nm")
-                azcam.api.set_wavelength(wave)
+                azcam.api.instrument.set_wavelength(wave)
                 time.sleep(self.wavelength_delay)
-                wave1 = azcam.api.get_wavelength()
+                wave1 = azcam.api.instrument.get_wavelength()
                 wave1 = int(wave1)
             azcam.log(f"Current wavelength is {wave1} nm")
 
@@ -114,10 +116,10 @@ class DetCal(Tester):
             except Exception:
                 et = 1.0
             while doloop:
-                azcam.api.set_par("imagetype", self.exposure_type)
+                azcam.api.exposure.set_par("imagetype", self.exposure_type)
                 azcam.log(f"Taking flat for {et:0.3f} seconds")
-                flatfilename = azcam.api.get_image_filename()
-                azcam.api.expose(et, self.exposure_type, "detcal flat")
+                flatfilename = azcam.api.exposure.get_image_filename()
+                azcam.api.exposure.expose(et, self.exposure_type, "detcal flat")
 
                 # get counts
                 bin1 = int(azcam.fits.get_keyword(flatfilename, "CCDBIN1"))

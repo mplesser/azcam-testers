@@ -56,22 +56,26 @@ class Prnu(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("prnu")
-        azcam.api.set_par("imagefolder", newfolder)
+        azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
-        azcam.api.set_par("imageroot", "prnu.")  # for automatic data analysis
-        azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageroot", "prnu.")  # for automatic data analysis
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
-        azcam.api.set_par("imagetype", "zero")
-        filename = os.path.basename(azcam.api.get_image_filename())
+        azcam.api.exposure.set_par("imagetype", "zero")
+        filename = os.path.basename(azcam.api.exposure.get_image_filename())
         azcam.log("Taking PRNU bias: %s" % filename)
-        azcam.api.expose(0, "zero", "PRNU bias")
+        azcam.api.exposure.expose(0, "zero", "PRNU bias")
 
         waves = list(self.exposures.keys())
         waves.sort()
@@ -81,15 +85,15 @@ class Prnu(Tester):
 
             if wavelength > 0:
                 azcam.log(f"Moving to wavelength: {int(wavelength)}")
-                azcam.api.set_wavelength(wavelength)
-                wave = azcam.api.get_wavelength()
+                azcam.api.instrument.set_wavelength(wavelength)
+                wave = azcam.api.instrument.get_wavelength()
                 wave = int(wave)
                 azcam.log(f"Current wavelength: {wave}")
-            filename = os.path.basename(azcam.api.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_image_filename())
             azcam.log(
                 f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm"
             )
-            azcam.api.expose(
+            azcam.api.exposure.expose(
                 exposuretime, self.exposure_type, f"PRNU image {wavelength:.1f} nm"
             )
 

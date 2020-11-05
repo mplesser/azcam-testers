@@ -87,10 +87,10 @@ class Qe(Tester):
 
         # create new subfolder
         currentfolder, subfolder = azcam.utils.make_file_folder("qe")
-        azcam.api.set_par("imagefolder", subfolder)
+        azcam.api.exposure.set_par("imagefolder", subfolder)
 
-        bin1 = azcam.api.get_par("colbin")
-        bin2 = azcam.api.get_par("rowbin")
+        bin1 = azcam.api.exposure.get_par("colbin")
+        bin2 = azcam.api.exposure.get_par("rowbin")
         binning = bin1 * bin2
 
         # Get exposure times
@@ -112,36 +112,41 @@ class Qe(Tester):
         else:
             raise azcam.AzcamError("could not determine exposure times")
 
-        azcam.api.set_par("imageroot", "qe.")  # for automatic data analysis
-        azcam.api.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.set_par("imagesequencenumber", 1)  # start at sequence number 1
-        azcam.api.set_par("imageautoname", 0)  # manually set name
-        azcam.api.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.exposure.set_par("imageroot", "qe.")  # for automatic data analysis
+        azcam.api.exposure.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
+        azcam.api.exposure.set_par(
+            "imagesequencenumber", 1
+        )  # start at sequence number 1
+        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
+        azcam.api.exposure.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # binning
-        azcam.api.roi_reset()  # use entire device
-        azcam.api.set_roi(-1, -1, -1, -1, self.binning, self.binning)
-
-        # azcam.api.set_shutter(1, 1)  # open instrument shutter
+        azcam.api.exposure.roi_reset()  # use entire device
+        azcam.api.exposure.set_roi(-1, -1, -1, -1, self.binning, self.binning)
 
         # take bias image
-        azcam.api.set_par("imageroot", "qe.")
+        azcam.api.exposure.set_par("imageroot", "qe.")
         azcam.log(
-            "Taking bias image %s..." % os.path.basename(azcam.api.get_image_filename())
+            "Taking bias image %s..."
+            % os.path.basename(azcam.api.exposure.get_image_filename())
         )
 
         # measure the reference diode current with shutter closed
         if self.use_ref_diode:
-            dc = azcam.api.get_current(0, 0)
+            dc = azcam.api.instrument.get_current(0, 0)
             azcam.api.set_keyword(
                 "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
             )
 
         # clear device
-        azcam.api.tests()
+        azcam.api.exposure.tests()
 
-        azcam.api.expose(0, "zero", "QE bias")
+        azcam.api.exposure.expose(0, "zero", "QE bias")
 
         waves = self.wavelengths
         for wave in waves:
@@ -150,33 +155,37 @@ class Qe(Tester):
             etime = self.exposure_times[wave]
             title = str(wave) + " nm QE flat for " + str(etime) + " secs"
             azcam.log(f"Setting wavelength to {wave}")
-            azcam.api.set_wavelength(wave)
+            azcam.instrument.set_wavlength(wave)
 
             azcam.log(
                 "Taking %d nm QE image for %.3f seconds: %s..."
-                % (wave, etime, os.path.basename(azcam.api.get_image_filename()))
+                % (
+                    wave,
+                    etime,
+                    os.path.basename(azcam.api.exposure.get_image_filename()),
+                )
             )
 
             # make sure at proper wavelength
-            w = azcam.api.get_wavelength()
+            w = azcam.api.instrument.get_wavelength()
             w = int(w)
             azcam.log(f"Actual wavelength is {w}")
 
             # measure the reference diode current
             if self.use_ref_diode:
-                dc = azcam.api.get_current(0, 1)
+                dc = azcam.api.instrument.get_current(0, 1)
                 azcam.api.set_keyword(
                     "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
                 )
 
             # make exposure
             if self.flush_before_exposure:
-                azcam.api.tests()
+                azcam.api.exposure.tests()
 
             if self.include_dark_images:
-                azcam.api.expose(etime, "dark", f"{title}")
+                azcam.api.exposure.expose(etime, "dark", f"{title}")
 
-            azcam.api.expose(etime, "flat", f"{title}")
+            azcam.api.exposure.expose(etime, "flat", f"{title}")
 
         # copy diode cal file to local folder
         try:

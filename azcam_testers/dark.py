@@ -86,7 +86,7 @@ class Dark(Tester):
         azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         azcam.api.exposure.set_par("imageroot", "dark.")  # for automatic data analysis
         azcam.api.exposure.set_par(
@@ -105,7 +105,7 @@ class Dark(Tester):
             azcam.api.exposure.set_par("imagetype", "dark")  # for GetFilename
             filename = os.path.basename(azcam.api.exposure.get_image_filename())
             azcam.log(f"Taking pre-dark image: {filename}")
-            temp = azcam.api.instrument.get_temperatures()
+            temp = azcam.api.tempcon.get_temperatures()
             azcam.log(f"Current temperatures: {temp}")
             azcam.api.exposure.expose(0, "zero", "pre-dark bias image")
 
@@ -115,7 +115,7 @@ class Dark(Tester):
             azcam.log(
                 f"Taking dark image {imgnum + 1} for {self.exposure_time:0.3f} seconds: {filename}"
             )
-            temp = azcam.api.instrument.get_temperatures()
+            temp = azcam.api.tempcon.get_temperatures()
             azcam.log(f"  Current temperatures: {temp}")
             azcam.api.exposure.expose(self.exposure_time, "dark", "dark image")
 

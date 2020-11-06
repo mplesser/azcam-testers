@@ -144,7 +144,7 @@ class Qe(Tester):
             )
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         azcam.api.exposure.expose(0, "zero", "QE bias")
 
@@ -180,7 +180,7 @@ class Qe(Tester):
 
             # make exposure
             if self.flush_before_exposure:
-                azcam.api.exposure.tests()
+                azcam.api.exposure.test()
 
             if self.include_dark_images:
                 azcam.api.exposure.expose(etime, "dark", f"{title}")

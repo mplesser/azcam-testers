@@ -90,7 +90,7 @@ class Ptc(Tester):
         azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         # set wavelength
         if self.wavelength > 0:
@@ -180,7 +180,7 @@ class Ptc(Tester):
 
             # make exposure
             if self.flush_before_exposure:
-                azcam.api.exposure.tests()
+                azcam.api.exposure.test()
             azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 1")
             filename = os.path.basename(azcam.api.exposure.get_image_filename())
 

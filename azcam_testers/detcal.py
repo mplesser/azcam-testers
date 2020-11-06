@@ -87,7 +87,7 @@ class DetCal(Tester):
         self.zero_mean = gain.zero_mean
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         self.mean_counts = {}
         self.mean_electrons = {}

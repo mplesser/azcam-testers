@@ -111,7 +111,7 @@ class Gain(Tester):
 
         # clear device
         if self.clear_arrray:
-            azcam.api.exposure.tests()
+            azcam.api.exposure.test()
 
         # set wavelength
         if self.wavelength > 0:

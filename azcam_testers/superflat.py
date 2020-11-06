@@ -51,7 +51,7 @@ class Superflat(Tester):
         currentfolder = azcam.utils.curdir()
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         # set wavelength
         if self.wavelength > 0:

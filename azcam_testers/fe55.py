@@ -119,7 +119,7 @@ class Fe55(Tester):
         azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         azcam.api.exposure.set_par("imageroot", "fe55.")  # for automatic data analysis
         azcam.api.exposure.set_par(

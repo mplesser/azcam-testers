@@ -51,7 +51,7 @@ class Bias(Tester):
         azcam.api.exposure.set_par("imagefolder", newfolder)
 
         # clear device
-        azcam.api.exposure.tests()
+        azcam.api.exposure.test()
 
         azcam.api.exposure.set_par("imageroot", "bias.")  # for automatic data analysis
         azcam.api.exposure.set_par(

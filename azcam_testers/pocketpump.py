@@ -79,7 +79,7 @@ class PocketPump(Tester):
         azcam.log("PocketPump timing code will be: %s" % timcode)
         azcam.api.exposure.set_par("TimingFile", timcode)
         azcam.api.exposure.reset()
-        azcam.api.exposure.tests(2)
+        azcam.api.exposure.test(2)
 
         # take a bias
         azcam.log("Taking first pocketpump bias")
@@ -194,7 +194,7 @@ class PocketPump(Tester):
 
         # flush well
         azcam.log("Flushing")
-        azcam.api.exposure.tests(2)
+        azcam.api.exposure.test(2)
 
         # take a bias
         azcam.log("Taking first pocketpump bias")

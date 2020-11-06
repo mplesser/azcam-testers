@@ -155,7 +155,7 @@ class Qe(Tester):
             etime = self.exposure_times[wave]
             title = str(wave) + " nm QE flat for " + str(etime) + " secs"
             azcam.log(f"Setting wavelength to {wave}")
-            azcam.instrument.set_wavlength(wave)
+            azcam.api.instrument.set_wavelength(wave)
 
             azcam.log(
                 "Taking %d nm QE image for %.3f seconds: %s..."

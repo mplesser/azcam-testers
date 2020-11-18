@@ -205,14 +205,14 @@ class PocketPump(Tester):
             raise message
 
         # turn on pocketpumping
-        azcam.api.rcommand("controller.set_pocket_pumping 1")
+        azcam.api.serverconn.rcommand("controller.set_pocket_pumping 1")
 
         # expose
         azcam.log("Taking pocketpump flat")
         azcam.api.exposure.expose(et, "flat", "pocketpump flat")
 
         # turn off pocketpumping
-        azcam.api.rcommand("controller.set_pocket_pumping 0")
+        azcam.api.serverconn.rcommand("controller.set_pocket_pumping 0")
 
         # take a bias
         azcam.log("Taking second pocketpump bias")

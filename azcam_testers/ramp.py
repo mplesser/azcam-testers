@@ -55,7 +55,7 @@ class Ramp(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # flush detector
         azcam.api.exposure.test()
@@ -88,7 +88,7 @@ class Ramp(Tester):
         azcam.api.exposure.expose(BaseExposureTime, "ramp", "ramp image 2")
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
 
         return
 

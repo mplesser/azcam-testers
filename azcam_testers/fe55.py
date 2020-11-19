@@ -112,7 +112,7 @@ class Fe55(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("fe55")
@@ -155,7 +155,7 @@ class Fe55(Tester):
             azcam.api.exposure.expose(self.exposure_time, "dark", "dark image")
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("Fe-55 finished")
 
         return

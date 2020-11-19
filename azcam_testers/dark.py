@@ -79,7 +79,7 @@ class Dark(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("dark")
@@ -120,7 +120,7 @@ class Dark(Tester):
             azcam.api.exposure.expose(self.exposure_time, "dark", "dark image")
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("Dark sequence finished")
 
         return

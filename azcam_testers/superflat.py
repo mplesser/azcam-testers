@@ -47,7 +47,7 @@ class Superflat(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
         currentfolder = azcam.utils.curdir()
 
         # clear device
@@ -109,7 +109,7 @@ class Superflat(Tester):
                 )
 
             # finish this set
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
 
         # finish
         azcam.log("Superflat sequence finished")

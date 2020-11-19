@@ -75,7 +75,7 @@ class Linearity(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("linearity")
@@ -158,7 +158,7 @@ class Linearity(Tester):
             azcam.api.exposure.expose(exptime, self.exposure_type, "Linearity flat")
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("Linearity sequence finished")
 
         return

@@ -83,7 +83,7 @@ class Qe(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         currentfolder, subfolder = azcam.utils.make_file_folder("qe")
@@ -139,8 +139,8 @@ class Qe(Tester):
         # measure the reference diode current with shutter closed
         if self.use_ref_diode:
             dc = azcam.api.instrument.get_current(0, 0)
-            azcam.api.set_keyword(
-                "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
+            azcam.api.instrument.set_keyword(
+                "REFCUR", dc, "Reference diode current (A)", "float"
             )
 
         # clear device
@@ -174,8 +174,8 @@ class Qe(Tester):
             # measure the reference diode current
             if self.use_ref_diode:
                 dc = azcam.api.instrument.get_current(0, 1)
-                azcam.api.set_keyword(
-                    "REFCUR", dc, "Reference diode current (A)", "float", "instrument"
+                azcam.api.instrument.set_keyword(
+                    "REFCUR", dc, "Reference diode current (A)", "float"
                 )
 
             # make exposure
@@ -216,7 +216,7 @@ class Qe(Tester):
             azcam.api.delete_keyword("REFCUR", "instrument")
         except Exception:
             pass
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("QE sequence finished")
 
         return

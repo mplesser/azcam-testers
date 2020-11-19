@@ -44,7 +44,7 @@ class Bias(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("bias")
@@ -75,7 +75,7 @@ class Bias(Tester):
                 time.sleep(self.delay)
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("Bias sequence finished")
 
         return

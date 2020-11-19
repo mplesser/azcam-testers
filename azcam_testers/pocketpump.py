@@ -49,7 +49,7 @@ class PocketPump(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         azcam.api.exposure.set_par(
             "imageroot", "pocketpump."
@@ -88,7 +88,7 @@ class PocketPump(Tester):
         except Exception as message:
             azcam.api.exposure.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # setup exposure
@@ -123,7 +123,7 @@ class PocketPump(Tester):
         except Exception as message:
             azcam.api.exposure.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             return message
 
         # take a reference flat of same time
@@ -136,13 +136,13 @@ class PocketPump(Tester):
         except Exception as message:
             azcam.api.exposure.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # finish
         azcam.api.exposure.set_par("TimingFile", timingfile_org)
         azcam.api.exposure.reset()
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("PocketPump sequence finished")
 
         return
@@ -156,7 +156,7 @@ class PocketPump(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         azcam.api.exposure.set_par(
             "imageroot", "pocketpump."
@@ -201,7 +201,7 @@ class PocketPump(Tester):
         try:
             azcam.api.exposure.expose(0, "zero", "pocketpump first bias")
         except Exception as message:
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # turn on pocketpumping
@@ -219,7 +219,7 @@ class PocketPump(Tester):
         try:
             azcam.api.exposure.expose(0, "zero", "pocketpump second bias")
         except Exception as message:
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # take a reference flat of same time
@@ -230,11 +230,11 @@ class PocketPump(Tester):
             )
 
         except Exception as message:
-            azcam.api.restore_imagepars(impars, currentfolder)
+            azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("PocketPump sequence finished")
 
         return

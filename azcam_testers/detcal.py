@@ -60,7 +60,7 @@ class DetCal(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         if self.overwrite:
@@ -162,7 +162,7 @@ class DetCal(Tester):
         self.valid = True
 
         # finish
-        azcam.api.restore_imagepars(impars, startingfolder)
+        azcam.utils.restore_imagepars(impars, startingfolder)
         azcam.log("detector calibration sequence finished")
 
         return

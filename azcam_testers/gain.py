@@ -92,7 +92,7 @@ class Gain(Tester):
 
         # save pars to be changed
         impars = {}
-        azcam.api.save_imagepars(impars)
+        azcam.utils.save_imagepars(impars)
 
         # create new subfolder
         if self.overwrite:
@@ -156,7 +156,7 @@ class Gain(Tester):
             azcam.log("Image 2 finished")
 
         # finish
-        azcam.api.restore_imagepars(impars, currentfolder)
+        azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("Gain sequence finished")
 
         return

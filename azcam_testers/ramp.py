@@ -4,7 +4,7 @@ import os
 import numpy
 
 from azcam.console import azcam
-from azcam.functions.fits import pyfits
+from azcam.fits import pyfits
 
 from .basetester import Tester
 

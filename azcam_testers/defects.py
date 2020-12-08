@@ -5,6 +5,7 @@ import azcam_testers
 import numpy
 
 from azcam.console import azcam
+from azcam.image import Image
 
 from .basetester import Tester
 
@@ -41,9 +42,7 @@ class Defects(Tester):
         # dark defects
         self.darkdefects_datafile = "darkdefects.txt"
         self.darkdefectsreport_file = "darkdefects"
-        self.dark_pixel_reject = (
-            -1
-        )  # reject superlfat dark pixels below this value from mean
+        self.dark_pixel_reject = -1  # reject superlfat dark pixels below this value from mean
         self.flat_filename = "superflat.fits"  # flat image for dark pixels
         self.dark_defects_grade = "FAIL"
         self.dark_rejected_pixels = -1
@@ -55,9 +54,7 @@ class Defects(Tester):
         self.report_file = "defects"
         self.defects_mask_filename = "DefectsMask.fits"
         self.total_rejected_pixels = -1
-        self.allowable_rejected_pixels = (
-            -1
-        )  # allowable total number of defective pixels
+        self.allowable_rejected_pixels = -1  # allowable total number of defective pixels
         self.allowable_bad_fraction = -1  # allowable total fraction of defective pixels
 
         self.report_include_plots = 0  # include plots in report file
@@ -74,9 +71,7 @@ class Defects(Tester):
         else:
             self.grade = "FAIL"
 
-        self.total_rejected_pixels = (
-            self.dark_rejected_pixels + self.bright_rejected_pixels
-        )
+        self.total_rejected_pixels = self.dark_rejected_pixels + self.bright_rejected_pixels
 
         # make total defects mask
         self.make_defects_mask()
@@ -128,7 +123,7 @@ class Defects(Tester):
         self.template = superflatimagename
         NumExt, _, _ = azcam.fits.get_extensions(superflatimagename)
 
-        superflatimage = azcam.Image(superflatimagename)
+        superflatimage = Image(superflatimagename)
 
         # scale by gain
         superflatimage.set_scaling(
@@ -188,7 +183,7 @@ class Defects(Tester):
         azcam.plot.save_figure(fignum, "DarkPixelRejectionMask")
 
         # write mask as FITS
-        maskfile = azcam.Image(superflatimagename)  # should be a new file later...
+        maskfile = Image(superflatimagename)  # should be a new file later...
         maskfile.assemble(1)  # for parameters
         maskfile.buffer = self.dark_mask
         maskfile.save_data_format = "uint8"
@@ -227,7 +222,7 @@ class Defects(Tester):
         self.template = darkfilename
         NumExt, _, _ = azcam.fits.get_extensions(darkfilename)
 
-        darkimage = azcam.Image(darkfilename)
+        darkimage = Image(darkfilename)
 
         # Assemble and scale by gain
         darkimage.set_scaling(azcam.api.gain.get_system_gain(), None)
@@ -272,7 +267,7 @@ class Defects(Tester):
         azcam.plot.save_figure(fignum, "BrightPixelRejectionMask")
 
         # write mask as FITS
-        maskfile = azcam.Image(darkfilename)  # should be a new file later...
+        maskfile = Image(darkfilename)  # should be a new file later...
         maskfile.assemble(1)  # for parameters
         maskfile.buffer = self.bright_mask
         maskfile.save_data_format = "uint8"
@@ -375,7 +370,7 @@ class Defects(Tester):
         azcam.plot.save_figure(fignum, "PixelRejectionMask")
 
         # write mask as FITS
-        defectsmask = azcam.Image(self.template)  # just a template
+        defectsmask = Image(self.template)  # just a template
         defectsmask.assemble(1)
         # defectsmask.buffer=numpy.ma.getmask(self.DefectsMask).astype('uint8')
         defectsmask.buffer = self.defects_mask.astype("uint8")
@@ -432,7 +427,7 @@ class Defects(Tester):
         if filename == "":
             filename = self.defects_mask_filename
 
-        defectsimage = azcam.Image(filename)
+        defectsimage = Image(filename)
         defectsimage.assemble(1)
         self.DefectsImage = defectsimage
 

@@ -6,6 +6,7 @@ import azcam_testers
 import numpy
 
 from azcam.console import azcam
+from azcam.image import Image
 
 from .basetester import Tester
 
@@ -89,13 +90,9 @@ class Dark(Tester):
         azcam.api.exposure.test()
 
         azcam.api.exposure.set_par("imageroot", "dark.")  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageincludesequencenumber", 1)  # use sequence numbers
         azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
         azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # loop through images
@@ -215,7 +212,7 @@ class Dark(Tester):
         binned = int(bin1) * int(bin2)
 
         # create dark image
-        self.darkimage = azcam.Image(masterdark)
+        self.darkimage = Image(masterdark)
 
         # set scale from gain
         history = azcam.fits.get_history(masterdark)
@@ -244,8 +241,7 @@ class Dark(Tester):
         if self.use_edge_mask:
             if azcam.api.defects.valid:
                 self.MaskedImage = numpy.ma.masked_where(
-                    azcam.api.defects.defects_mask,
-                    self.darkimage.buffer,
+                    azcam.api.defects.defects_mask, self.darkimage.buffer,
                 )
             else:
                 azcam.api.defects.make_edge_mask(self.darkimage.buffer)
@@ -256,16 +252,10 @@ class Dark(Tester):
         # optionally mask bright pixels
         if self.bright_pixel_reject != -1:
             self.MaskedImage = numpy.ma.masked_where(
-                self.MaskedImage > self.bright_pixel_reject,
-                self.MaskedImage,
-                copy=False,
+                self.MaskedImage > self.bright_pixel_reject, self.MaskedImage, copy=False,
             )
-            self.num_rejected_bright_pixels = totalpixels - numpy.ma.count(
-                self.MaskedImage
-            )
-            azcam.log(
-                f"Number of rejected bright pixels: {self.num_rejected_bright_pixels}"
-            )
+            self.num_rejected_bright_pixels = totalpixels - numpy.ma.count(self.MaskedImage)
+            azcam.log(f"Number of rejected bright pixels: {self.num_rejected_bright_pixels}")
 
         # get number of pixels not masked
         self.total_pixels = numpy.ma.count(self.MaskedImage)
@@ -419,9 +409,7 @@ class Dark(Tester):
         ax.set_xlabel("Dark Signal [e/pix/sec]")
         ax.set_ylabel("Pixel Fraction")
         azcam.plot.plt.ylim(0.5, 1.0)
-        ax.set_yticks(
-            [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00]
-        )
+        ax.set_yticks([0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00])
         azcam.plot.plt.xlim(0.0, self.mean_dark_signal * 10.0)
 
         if self.mean_dark_spec != -1:
@@ -429,17 +417,13 @@ class Dark(Tester):
                 x=self.mean_dark_signal, linestyle="-", color="green", label="Mean"
             )
             azcam.plot.plt.legend(loc="upper right")
-            azcam.plot.plt.axvline(
-                x=self.mean_dark_spec, linestyle="--", color="red", label="Spec"
-            )
+            azcam.plot.plt.axvline(x=self.mean_dark_spec, linestyle="--", color="red", label="Spec")
             azcam.plot.plt.legend(loc="upper right")
         if self.dark_limit != -1:
             azcam.plot.plt.axhline(
                 y=self.dark_fraction, linestyle="--", color="red", label="Fraction"
             )
-            azcam.plot.plt.axvline(
-                x=self.dark_limit, linestyle="--", color="blue", label="Limit"
-            )
+            azcam.plot.plt.axvline(x=self.dark_limit, linestyle="--", color="blue", label="Limit")
             azcam.plot.plt.legend(loc="upper right")
 
         azcam.plot.plt.title("Dark Signal Cummulative Histogram")
@@ -507,9 +491,7 @@ class Dark(Tester):
 
         lines.append("")
         if "cumm_hist" in self.report_plots:
-            lines.append(
-                f"![Cumulative Histogram]({os.path.abspath(self.cumm_hist_plot)})  "
-            )
+            lines.append(f"![Cumulative Histogram]({os.path.abspath(self.cumm_hist_plot)})  ")
             lines.append("*Cumulative Histogram.*")
             lines.append("")
 

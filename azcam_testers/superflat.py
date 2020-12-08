@@ -6,6 +6,7 @@ import azcam_testers
 import numpy
 
 from azcam.console import azcam
+from azcam.image import Image
 
 from .basetester import Tester
 
@@ -71,9 +72,7 @@ class Superflat(Tester):
 
             meanelectrons = azcam.api.detcal.mean_electrons
 
-            self.exposure_times = (
-                numpy.array(self.exposure_levels) / meanelectrons[wave]
-            )
+            self.exposure_times = numpy.array(self.exposure_levels) / meanelectrons[wave]
         elif len(self.exposure_times) > 0:
             azcam.log("Using ExposureTimes")
         else:
@@ -81,12 +80,8 @@ class Superflat(Tester):
 
         for setnum, exposuretime in enumerate(self.exposure_times):
 
-            azcam.api.exposure.set_par(
-                "imageroot", "superflat."
-            )  # for automatic data analysis
-            azcam.api.exposure.set_par(
-                "imageincludesequencenumber", 1
-            )  # use sequence numbers
+            azcam.api.exposure.set_par("imageroot", "superflat.")  # for automatic data analysis
+            azcam.api.exposure.set_par("imageincludesequencenumber", 1)  # use sequence numbers
             azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
             azcam.api.exposure.set_par(
                 "imageautoincrementsequencenumber", 1
@@ -104,9 +99,7 @@ class Superflat(Tester):
                     "Taking SuperFlat image %d of %d for %.3f seconds"
                     % (loop + 1, self.number_images_acquire[setnum], exposuretime)
                 )
-                azcam.api.exposure.expose(
-                    exposuretime, self.exposure_type, "superflat flat"
-                )
+                azcam.api.exposure.expose(exposuretime, self.exposure_type, "superflat flat")
 
             # finish this set
             azcam.utils.restore_imagepars(impars, currentfolder)
@@ -172,9 +165,7 @@ class Superflat(Tester):
                 azcam.fits.colbias(nextfile, fit_order=self.fit_order)
 
             SequenceNumber = SequenceNumber + 1
-            nextfile = (
-                os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
-            )
+            nextfile = os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
             loop += 1
 
         # median combine all images
@@ -188,7 +179,7 @@ class Superflat(Tester):
         else:
             azcam.log("WARNING: no gain values found for scaling")
 
-        superflat_image = azcam.Image(self.superflat_filename)
+        superflat_image = Image(self.superflat_filename)
         if self.overscan_correct:
             superflat_image.set_scaling(self.system_gain, None)
         else:
@@ -213,9 +204,7 @@ class Superflat(Tester):
             shutil.copy(self.superflat_filename, startingfolder)
             shutil.copy(self.scaled_superflat_filename, startingfolder)
             shutil.copy("superflatimage.png", startingfolder)
-            self.superflat_filename = os.path.join(
-                startingfolder, self.superflat_filename
-            )
+            self.superflat_filename = os.path.join(startingfolder, self.superflat_filename)
             self.scaled_superflat_filename = os.path.join(
                 startingfolder, self.scaled_superflat_filename
             )

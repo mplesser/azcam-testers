@@ -10,17 +10,17 @@ class Tester(Report):
     Base class inherited by all tester classes.
     """
 
-    def __init__(self, obj_id="tester", obj_name=None):
+    def __init__(self, obj_id="tester", name=None):
 
         super().__init__()
 
         #: tester ID
         self.id = obj_id
 
-        if obj_name is None:
+        if name is None:
             self.name = self.id
         else:
-            self.name = obj_name
+            self.name = name
 
         # acquistion
         self.number_images_acquire = 1  # number of images to acquire

@@ -17,9 +17,7 @@ class Report(object):
 
     def __init__(self):
 
-        self.report_css = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "report.css"
-        )
+        self.report_css = os.path.join(os.path.dirname(os.path.abspath(__file__)), "report.css")
 
     def make_rstfile(self, rst_file, lines=[]):
         """
@@ -140,6 +138,7 @@ class Report(object):
                 "margin-left": "0.75in",
                 "encoding": "UTF-8",
                 "no-outline": None,
+                "enable-local-file-access": None,
             }
         pdfkit.from_string(html_text, pdf_file, options, css=self.report_css)
 

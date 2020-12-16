@@ -4,10 +4,9 @@ import shutil
 import azcam_testers
 import numpy
 
-from azcam.console import azcam
+import azcam
 from azcam.image import Image
-
-from .basetester import Tester
+from azcam_testers.basetester import Tester
 
 
 class Defects(Tester):

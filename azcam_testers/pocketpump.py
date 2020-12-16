@@ -1,10 +1,7 @@
 import os
 
-import azcam_testers
-
-from azcam.console import azcam
-
-from .basetester import Tester
+import azcam
+from azcam_testers.basetester import Tester
 
 
 class PocketPump(Tester):

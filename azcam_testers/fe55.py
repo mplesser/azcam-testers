@@ -10,10 +10,9 @@ import scipy.ndimage
 import scipy.ndimage.filters
 import scipy.optimize
 
-from azcam.console import azcam
+import azcam
+from azcam_testers.basetester import Tester
 from azcam.fits import pyfits
-
-from .basetester import Tester
 
 # constants
 CON1 = 2.0 * numpy.sqrt(2.0 * numpy.log(2.0))  # 2.355 for sigma <=> FWHM

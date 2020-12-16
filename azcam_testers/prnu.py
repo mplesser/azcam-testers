@@ -2,13 +2,11 @@ import glob
 import os
 import shutil
 
-import azcam_testers
 import numpy
 
-from azcam.console import azcam
+import azcam
 from azcam.image import Image
-
-from .basetester import Tester
+from azcam_testers.basetester import Tester
 
 
 class Prnu(Tester):
@@ -201,8 +199,7 @@ class Prnu(Tester):
             if self.use_edge_mask:
                 if azcam.api.defects.valid:
                     self.MaskedImage = numpy.ma.masked_where(
-                        azcam.api.defects.defects_mask,
-                        prnuimage.buffer,
+                        azcam.api.defects.defects_mask, prnuimage.buffer,
                     )
                 else:
                     azcam.api.defects.make_edge_mask(

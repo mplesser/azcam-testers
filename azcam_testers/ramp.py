@@ -3,10 +3,9 @@ import os
 
 import numpy
 
-from azcam.console import azcam
+import azcam
+from azcam_testers.basetester import Tester
 from azcam.fits import pyfits
-
-from .basetester import Tester
 
 
 class Ramp(Tester):
@@ -336,19 +335,13 @@ class Ramp(Tester):
             azcam.plot.plt.figure(1)
             if self.logplot:
                 azcam.plot.plt.loglog(
-                    m,
-                    sdev,
-                    plotstyle[chan % self.num_chans],
-                    markersize=marksize,
+                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
                 )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1, 100000)
             else:
                 azcam.plot.plt.plot(
-                    m,
-                    sdev,
-                    plotstyle[chan % self.num_chans],
-                    markersize=marksize,
+                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
                 )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)

@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from azcam.console import azcam
+import azcam
 
 from .report import Report
 

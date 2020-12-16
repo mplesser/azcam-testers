@@ -5,9 +5,8 @@ import time
 import azcam_testers
 import numpy
 
-from azcam.console import azcam
-
-from .basetester import Tester
+import azcam
+from azcam_testers.basetester import Tester
 
 
 class DetCal(Tester):

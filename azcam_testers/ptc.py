@@ -2,12 +2,10 @@ import glob
 import os
 import shutil
 
-import azcam_testers
 import numpy
 
-from azcam.console import azcam
-
-from .basetester import Tester
+import azcam
+from azcam_testers.basetester import Tester
 
 
 class Ptc(Tester):
@@ -520,34 +518,22 @@ class Ptc(Tester):
             if logplot:
                 if self.style1 == "":
                     azcam.plot.plt.loglog(
-                        m,
-                        sdev,
-                        plotstyle[chan % self.num_chans],
-                        markersize=marksize,
+                        m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
                     )
                 else:
                     azcam.plot.plt.loglog(
-                        m,
-                        sdev,
-                        self.style1,
-                        markersize=marksize,
+                        m, sdev, self.style1, markersize=marksize,
                     )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1)
             else:
                 if self.style1 == "":
                     azcam.plot.plt.plot(
-                        m,
-                        var,
-                        plotstyle[chan % self.num_chans],
-                        markersize=marksize,
+                        m, var, plotstyle[chan % self.num_chans], markersize=marksize,
                     )
                 else:
                     azcam.plot.plt.plot(
-                        m,
-                        var,
-                        self.style1,
-                        markersize=marksize,
+                        m, var, self.style1, markersize=marksize,
                     )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)
@@ -597,17 +583,11 @@ class Ptc(Tester):
             azcam.plot.plt.figure(fignum_gain)
             if self.style2 == "":
                 azcam.plot.plt.plot(
-                    m,
-                    g,
-                    plotstyle[chan % self.num_chans],
-                    markersize=marksize,
+                    m, g, plotstyle[chan % self.num_chans], markersize=marksize,
                 )
             else:
                 azcam.plot.plt.plot(
-                    m,
-                    g,
-                    self.style2,
-                    markersize=marksize,
+                    m, g, self.style2, markersize=marksize,
                 )
 
             # set axes

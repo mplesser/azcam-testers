@@ -43,7 +43,7 @@ class Ramp(Tester):
         """
 
         # inputs
-        BaseExposureTime = azcam.db.genpars.get_par(
+        BaseExposureTime = azcam.api.config.get_par(
             "BaseExposureTime", "prompt", "Enter base exposure time", BaseExposureTime
         )
         BaseExposureTime = float(BaseExposureTime)
@@ -60,13 +60,9 @@ class Ramp(Tester):
         azcam.api.exposure.test()
 
         azcam.api.exposure.set_par("imageroot", "ramp.")  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
+        azcam.api.exposure.set_par("imageincludesequencenumber", 1)  # use sequence numbers
         azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
+        azcam.api.exposure.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
         azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
 
         # get bias image
@@ -199,9 +195,7 @@ class Ramp(Tester):
             sdevs = []
             for row in range(nrows):
                 roi = [self.first_col - 1, self.last_col, row, row + 1]
-                sdev = data_ffci[ext][roi[2] : roi[3]][
-                    roi[0] : roi[1]
-                ].std() / math.sqrt(2.0)
+                sdev = data_ffci[ext][roi[2] : roi[3]][roi[0] : roi[1]].std() / math.sqrt(2.0)
                 fmean = data_mean[ext][roi[2] : roi[3]][roi[0] : roi[1]].mean()
                 sdevs.append(sdev)
                 means.append(fmean)
@@ -335,13 +329,19 @@ class Ramp(Tester):
             azcam.plot.plt.figure(1)
             if self.logplot:
                 azcam.plot.plt.loglog(
-                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
+                    m,
+                    sdev,
+                    plotstyle[chan % self.num_chans],
+                    markersize=marksize,
                 )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1, 100000)
             else:
                 azcam.plot.plt.plot(
-                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
+                    m,
+                    sdev,
+                    plotstyle[chan % self.num_chans],
+                    markersize=marksize,
                 )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)

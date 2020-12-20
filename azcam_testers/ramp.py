@@ -37,16 +37,10 @@ class Ramp(Tester):
         self.logplot = 1
         self.include_dark_current = 0
 
-    def acquire(self, BaseExposureTime=0.0):
+    def acquire(self):
         """
         Acquire ramp images (one bias, two ramps).
         """
-
-        # inputs
-        BaseExposureTime = azcam.api.config.get_par(
-            "BaseExposureTime", "prompt", "Enter base exposure time", BaseExposureTime
-        )
-        BaseExposureTime = float(BaseExposureTime)
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("ramp")
@@ -72,15 +66,16 @@ class Ramp(Tester):
         azcam.api.exposure.expose(0, "zero", "ramp bias")
 
         # take data images
+        base_et = azcam.api.exposure.get_exposuretime()
         azcam.api.exposure.set_par("imagetype", "ramp")
         file1 = azcam.api.exposure.get_image_filename()
         azcam.log("Taking ramp image 1 %s" % os.path.basename(file1))
-        azcam.api.exposure.expose(BaseExposureTime, "ramp", "ramp image 1")
+        azcam.api.exposure.expose(base_et, "ramp", "ramp image 1")
 
         file2 = azcam.api.exposure.get_image_filename()
         azcam.log("Taking ramp image 2 %s" % os.path.basename(file2))
         azcam.api.exposure.flush(2)
-        azcam.api.exposure.expose(BaseExposureTime, "ramp", "ramp image 2")
+        azcam.api.exposure.expose(base_et, "ramp", "ramp image 2")
 
         # finish
         azcam.utils.restore_imagepars(impars, currentfolder)

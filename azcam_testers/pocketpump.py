@@ -48,33 +48,27 @@ class PocketPump(Tester):
         impars = {}
         azcam.utils.save_imagepars(impars)
 
-        azcam.api.exposure.set_par(
-            "imageroot", "pocketpump."
-        )  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)
+        azcam.api.config.set_par("imageroot", "pocketpump.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)
 
         # create and move to new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("pocketpump")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
         # set wavelength so exposure time is correct
         azcam.log(f"Setting wavelength to {self.wavelength}")
         azcam.api.instrument.set_wavelength(self.wavelength)
 
         # set proper timing code, reset, and clear device
-        timingfile_org = azcam.api.exposure.get_par("TimingFile")
+        timingfile_org = azcam.api.config.get_par("TimingFile")
         timcode = os.path.dirname(timingfile_org)
         timcode = os.path.join(timcode, self.pocketpump_timing_file)
         timcode = timcode.replace("\\", "/")
         azcam.log("PocketPump timing code will be: %s" % timcode)
-        azcam.api.exposure.set_par("TimingFile", timcode)
+        azcam.api.config.set_par("TimingFile", timcode)
         azcam.api.exposure.reset()
         azcam.api.exposure.test(2)
 
@@ -83,16 +77,14 @@ class PocketPump(Tester):
         try:
             azcam.api.exposure.expose(0, "zero", "pocketpump first bias")
         except Exception as message:
-            azcam.api.exposure.set_par("TimingFile", timingfile_org)
+            azcam.api.config.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
             azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # setup exposure
         azcam.log("Pocketpump setup")
-        azcam.api.exposure.begin_exposure(
-            self.exposure_time, self.exposure_type, "pocket pump"
-        )
+        azcam.api.exposure.begin_exposure(self.exposure_time, self.exposure_type, "pocket pump")
 
         # integrate
         azcam.log("Pocketpump integration")
@@ -118,7 +110,7 @@ class PocketPump(Tester):
         try:
             azcam.api.exposure.expose(0, "zero", "pocketpump second bias")
         except Exception as message:
-            azcam.api.exposure.set_par("TimingFile", timingfile_org)
+            azcam.api.config.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
             azcam.utils.restore_imagepars(impars, currentfolder)
             return message
@@ -131,13 +123,13 @@ class PocketPump(Tester):
             )
 
         except Exception as message:
-            azcam.api.exposure.set_par("TimingFile", timingfile_org)
+            azcam.api.config.set_par("TimingFile", timingfile_org)
             azcam.api.exposure.reset()
             azcam.utils.restore_imagepars(impars, currentfolder)
             raise message
 
         # finish
-        azcam.api.exposure.set_par("TimingFile", timingfile_org)
+        azcam.api.config.set_par("TimingFile", timingfile_org)
         azcam.api.exposure.reset()
         azcam.utils.restore_imagepars(impars, currentfolder)
         azcam.log("PocketPump sequence finished")
@@ -155,21 +147,15 @@ class PocketPump(Tester):
         impars = {}
         azcam.utils.save_imagepars(impars)
 
-        azcam.api.exposure.set_par(
-            "imageroot", "pocketpump."
-        )  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)
+        azcam.api.config.set_par("imageroot", "pocketpump.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)
 
         # create and move to new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("pocketpump")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
         # set wavelength so exposure time is correct
         azcam.log(f"Setting wavelength to {self.wavelength}")
@@ -222,9 +208,7 @@ class PocketPump(Tester):
         # take a reference flat of same time
         azcam.log("Taking non-pumped reference exposure")
         try:
-            azcam.api.exposure.expose(
-                et, self.exposure_type, "pocket pump reference flat"
-            )
+            azcam.api.exposure.expose(et, self.exposure_type, "pocket pump reference flat")
 
         except Exception as message:
             azcam.utils.restore_imagepars(impars, currentfolder)

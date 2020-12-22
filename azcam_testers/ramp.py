@@ -44,7 +44,7 @@ class Ramp(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("ramp")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
         # save pars to be changed
         impars = {}
@@ -53,21 +53,21 @@ class Ramp(Tester):
         # flush detector
         azcam.api.exposure.test()
 
-        azcam.api.exposure.set_par("imageroot", "ramp.")  # for automatic data analysis
-        azcam.api.exposure.set_par("imageincludesequencenumber", 1)  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageroot", "ramp.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # get bias image
-        azcam.api.exposure.set_par("imagetype", "zero")
+        azcam.api.config.set_par("imagetype", "zero")
         zerofile = azcam.api.exposure.get_image_filename()
         azcam.log("Taking bias image %s " % os.path.basename(zerofile))
         azcam.api.exposure.expose(0, "zero", "ramp bias")
 
         # take data images
         base_et = azcam.api.exposure.get_exposuretime()
-        azcam.api.exposure.set_par("imagetype", "ramp")
+        azcam.api.config.set_par("imagetype", "ramp")
         file1 = azcam.api.exposure.get_image_filename()
         azcam.log("Taking ramp image 1 %s" % os.path.basename(file1))
         azcam.api.exposure.expose(base_et, "ramp", "ramp image 1")
@@ -247,12 +247,7 @@ class Ramp(Tester):
             fontsize=bigfont,
         )
         f1.subplots_adjust(
-            left=pleft,
-            bottom=pbottom,
-            right=pright,
-            top=ptop,
-            wspace=wspace,
-            hspace=hspace,
+            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
         )
         fig1 = azcam.plot.plt.subplot(1, 1, 1)
         fig1.xaxis.grid(1, which="both")  # log lines
@@ -272,19 +267,10 @@ class Ramp(Tester):
         fig2 = azcam.plot.plt.figure(2)
         fig2.clf()  # clear old data
         fig2.text(
-            0.5,
-            0.93,
-            r"$\rm{Ramp\ System\ Gain}$",
-            horizontalalignment="center",
-            fontsize=bigfont,
+            0.5, 0.93, r"$\rm{Ramp\ System\ Gain}$", horizontalalignment="center", fontsize=bigfont,
         )
         fig2.subplots_adjust(
-            left=pleft,
-            bottom=pbottom,
-            right=pright,
-            top=0.83,
-            wspace=wspace,
-            hspace=hspace,
+            left=pleft, bottom=pbottom, right=pright, top=0.83, wspace=wspace, hspace=hspace,
         )
 
         # ax1 is mean at bottom, ax2 is row number on top
@@ -324,19 +310,13 @@ class Ramp(Tester):
             azcam.plot.plt.figure(1)
             if self.logplot:
                 azcam.plot.plt.loglog(
-                    m,
-                    sdev,
-                    plotstyle[chan % self.num_chans],
-                    markersize=marksize,
+                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
                 )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1, 100000)
             else:
                 azcam.plot.plt.plot(
-                    m,
-                    sdev,
-                    plotstyle[chan % self.num_chans],
-                    markersize=marksize,
+                    m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
                 )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)

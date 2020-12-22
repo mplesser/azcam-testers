@@ -55,23 +55,19 @@ class Prnu(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("prnu")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
         # clear device
         azcam.api.exposure.test()
 
-        azcam.api.exposure.set_par("imageroot", "prnu.")  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageroot", "prnu.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
-        azcam.api.exposure.set_par("imagetype", "zero")
+        azcam.api.config.set_par("imagetype", "zero")
         filename = os.path.basename(azcam.api.exposure.get_image_filename())
         azcam.log("Taking PRNU bias: %s" % filename)
         azcam.api.exposure.expose(0, "zero", "PRNU bias")
@@ -89,9 +85,7 @@ class Prnu(Tester):
                 wave = int(wave)
                 azcam.log(f"Current wavelength: {wave}")
             filename = os.path.basename(azcam.api.exposure.get_image_filename())
-            azcam.log(
-                f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm"
-            )
+            azcam.log(f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm")
             azcam.api.exposure.expose(
                 exposuretime, self.exposure_type, f"PRNU image {wavelength:.1f} nm"
             )
@@ -125,9 +119,7 @@ class Prnu(Tester):
             for filename in glob.glob(os.path.join(startingfolder, "*.fits")):
                 shutil.copy(filename, subfolder)
 
-            azcam.utils.curdir(
-                subfolder
-            )  # move for analysis folder - assume it already exists
+            azcam.utils.curdir(subfolder)  # move for analysis folder - assume it already exists
         else:
             subfolder = startingfolder
 
@@ -167,8 +159,7 @@ class Prnu(Tester):
                 if wavelength not in self.wavelengths:
                     SequenceNumber = SequenceNumber + 1
                     nextfile = (
-                        os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                        + ".fits"
+                        os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
                     )
                     continue
             except Exception:
@@ -225,18 +216,11 @@ class Prnu(Tester):
 
             self.grades[wavelength] = GRADE
 
-            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (
-                wavelength,
-                prnu * 100,
-                GRADE,
-            )
+            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (wavelength, prnu * 100, GRADE,)
             azcam.log(s)
 
             SequenceNumber = SequenceNumber + 1
-            nextfile = (
-                os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                + ".fits"
-            )
+            nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
 
         if "FAIL" in list(self.grades.values()):
             self.grade = "FAIL"

@@ -31,9 +31,7 @@ class Qe(Tester):
         self.grades = {}  # QE grade {wavelength:grade}
 
         self.exposure_levels = {}  # Exposure levels {wave:level} [e/pix]
-        self.exposure_times = {
-            500: 0.5
-        }  # Exposure times {wave:seconds]  (when no exposure_levels)
+        self.exposure_times = {500: 0.5}  # Exposure times {wave:seconds]  (when no exposure_levels)
         self.means = []  # Mean counts
         self.qe = {}  # QE values
         self.wavelengths = []  # Wavelengths for QE measurements
@@ -86,10 +84,10 @@ class Qe(Tester):
 
         # create new subfolder
         currentfolder, subfolder = azcam.utils.make_file_folder("qe")
-        azcam.api.exposure.set_par("imagefolder", subfolder)
+        azcam.api.config.set_par("imagefolder", subfolder)
 
-        bin1 = azcam.api.exposure.get_par("colbin")
-        bin2 = azcam.api.exposure.get_par("rowbin")
+        bin1 = azcam.api.config.get_par("colbin")
+        bin2 = azcam.api.config.get_par("rowbin")
         binning = bin1 * bin2
 
         # Get exposure times
@@ -111,36 +109,27 @@ class Qe(Tester):
         else:
             raise azcam.AzcamError("could not determine exposure times")
 
-        azcam.api.exposure.set_par("imageroot", "qe.")  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par(
-            "imagesequencenumber", 1
-        )  # start at sequence number 1
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageroot", "qe.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imagesequencenumber", 1)  # start at sequence number 1
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # binning
         azcam.api.exposure.roi_reset()  # use entire device
         azcam.api.exposure.set_roi(-1, -1, -1, -1, self.binning, self.binning)
 
         # take bias image
-        azcam.api.exposure.set_par("imageroot", "qe.")
+        azcam.api.config.set_par("imageroot", "qe.")
         azcam.log(
-            "Taking bias image %s..."
-            % os.path.basename(azcam.api.exposure.get_image_filename())
+            "Taking bias image %s..." % os.path.basename(azcam.api.exposure.get_image_filename())
         )
 
         # measure the reference diode current with shutter closed
         if self.use_ref_diode:
             dc = azcam.api.instrument.get_current(0, 0)
-            azcam.api.instrument.set_keyword(
-                "REFCUR", dc, "Reference diode current (A)", "float"
-            )
+            azcam.api.instrument.set_keyword("REFCUR", dc, "Reference diode current (A)", "float")
 
         # clear device
         azcam.api.exposure.test()
@@ -158,11 +147,7 @@ class Qe(Tester):
 
             azcam.log(
                 "Taking %d nm QE image for %.3f seconds: %s..."
-                % (
-                    wave,
-                    etime,
-                    os.path.basename(azcam.api.exposure.get_image_filename()),
-                )
+                % (wave, etime, os.path.basename(azcam.api.exposure.get_image_filename()),)
             )
 
             # make sure at proper wavelength
@@ -279,9 +264,7 @@ class Qe(Tester):
             for filename in glob.glob(os.path.join(startingfolder, "*.fits")):
                 shutil.copy(filename, subfolder)
 
-            azcam.utils.curdir(
-                subfolder
-            )  # move for analysis folder - assume it already exists
+            azcam.utils.curdir(subfolder)  # move for analysis folder - assume it already exists
         else:
             subfolder = startingfolder
 
@@ -308,9 +291,7 @@ class Qe(Tester):
             zerofilename = os.path.join(curfolder, zerofilename) + ".fits"
             zmeans = azcam.fits.mean(zerofilename)
             try:
-                spheredarkcurrent = float(
-                    azcam.fits.get_keyword(zerofilename, "REFCUR")
-                )
+                spheredarkcurrent = float(azcam.fits.get_keyword(zerofilename, "REFCUR"))
             except Exception:
                 spheredarkcurrent = 0.0
 
@@ -480,9 +461,7 @@ class Qe(Tester):
             SequenceNumber = SequenceNumber + 1
             if self.include_dark_images:
                 SequenceNumber = SequenceNumber + 1
-            nextfile = (
-                os.path.join(curfolder, rootname + "%04d" % SequenceNumber) + ".fits"
-            )
+            nextfile = os.path.join(curfolder, rootname + "%04d" % SequenceNumber) + ".fits"
 
         # analyze grades for each wavelength
         for wave in self.wavelengths:
@@ -584,12 +563,7 @@ class Qe(Tester):
                 fontsize=bigfont,
             )
         fig.subplots_adjust(
-            left=pleft,
-            bottom=pbottom,
-            right=pright,
-            top=ptop,
-            wspace=wspace,
-            hspace=hspace,
+            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
         )
         ax = azcam.plot.plt.gca()
         ax.grid(1)
@@ -616,9 +590,7 @@ class Qe(Tester):
         qevals = []
         for w in waves:
             qevals.append(self.qe[w])
-        azcam.plot.plt.errorbar(
-            waves, [x * 100.0 for x in qevals], yerr=3.0, marker="o", ls=""
-        )
+        azcam.plot.plt.errorbar(waves, [x * 100.0 for x in qevals], yerr=3.0, marker="o", ls="")
         azcam.plot.plt.ylim(0, 100)
         if len(self.plot_limits) == 2:
             azcam.plot.plt.xlim(self.plot_limits[0], self.plot_limits[1])

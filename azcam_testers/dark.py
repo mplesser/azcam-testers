@@ -83,26 +83,22 @@ class Dark(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("dark")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
         # clear device
         azcam.api.exposure.test()
 
-        azcam.api.exposure.set_par("imageroot", "dark.")  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageroot", "dark.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # loop through images
         for imgnum in range(self.number_images_acquire):
 
             # pre-dark bias
-            azcam.api.exposure.set_par("imagetype", "dark")  # for GetFilename
+            azcam.api.config.set_par("imagetype", "dark")  # for GetFilename
             filename = os.path.basename(azcam.api.exposure.get_image_filename())
             azcam.log(f"Taking pre-dark image: {filename}")
             temp = azcam.api.tempcon.get_temperatures()
@@ -110,7 +106,7 @@ class Dark(Tester):
             azcam.api.exposure.expose(0, "zero", "pre-dark bias image")
 
             # take dark image
-            azcam.api.exposure.set_par("imagetype", "dark")
+            azcam.api.config.set_par("imagetype", "dark")
             filename = os.path.basename(azcam.api.exposure.get_image_filename())
             azcam.log(
                 f"Taking dark image {imgnum + 1} for {self.exposure_time:0.3f} seconds: {filename}"
@@ -255,16 +251,10 @@ class Dark(Tester):
         # optionally mask bright pixels
         if self.bright_pixel_reject != -1:
             self.MaskedImage = numpy.ma.masked_where(
-                self.MaskedImage > self.bright_pixel_reject,
-                self.MaskedImage,
-                copy=False,
+                self.MaskedImage > self.bright_pixel_reject, self.MaskedImage, copy=False,
             )
-            self.num_rejected_bright_pixels = totalpixels - numpy.ma.count(
-                self.MaskedImage
-            )
-            azcam.log(
-                f"Number of rejected bright pixels: {self.num_rejected_bright_pixels}"
-            )
+            self.num_rejected_bright_pixels = totalpixels - numpy.ma.count(self.MaskedImage)
+            azcam.log(f"Number of rejected bright pixels: {self.num_rejected_bright_pixels}")
 
         # get number of pixels not masked
         self.total_pixels = numpy.ma.count(self.MaskedImage)
@@ -418,9 +408,7 @@ class Dark(Tester):
         ax.set_xlabel("Dark Signal [e/pix/sec]")
         ax.set_ylabel("Pixel Fraction")
         azcam.plot.plt.ylim(0.5, 1.0)
-        ax.set_yticks(
-            [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00]
-        )
+        ax.set_yticks([0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00])
         azcam.plot.plt.xlim(0.0, self.mean_dark_signal * 10.0)
 
         if self.mean_dark_spec != -1:
@@ -428,17 +416,13 @@ class Dark(Tester):
                 x=self.mean_dark_signal, linestyle="-", color="green", label="Mean"
             )
             azcam.plot.plt.legend(loc="upper right")
-            azcam.plot.plt.axvline(
-                x=self.mean_dark_spec, linestyle="--", color="red", label="Spec"
-            )
+            azcam.plot.plt.axvline(x=self.mean_dark_spec, linestyle="--", color="red", label="Spec")
             azcam.plot.plt.legend(loc="upper right")
         if self.dark_limit != -1:
             azcam.plot.plt.axhline(
                 y=self.dark_fraction, linestyle="--", color="red", label="Fraction"
             )
-            azcam.plot.plt.axvline(
-                x=self.dark_limit, linestyle="--", color="blue", label="Limit"
-            )
+            azcam.plot.plt.axvline(x=self.dark_limit, linestyle="--", color="blue", label="Limit")
             azcam.plot.plt.legend(loc="upper right")
 
         azcam.plot.plt.title("Dark Signal Cummulative Histogram")
@@ -506,9 +490,7 @@ class Dark(Tester):
 
         lines.append("")
         if "cumm_hist" in self.report_plots:
-            lines.append(
-                f"![Cumulative Histogram]({os.path.abspath(self.cumm_hist_plot)})  "
-            )
+            lines.append(f"![Cumulative Histogram]({os.path.abspath(self.cumm_hist_plot)})  ")
             lines.append("*Cumulative Histogram.*")
             lines.append("")
 

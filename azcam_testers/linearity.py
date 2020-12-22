@@ -77,28 +77,21 @@ class Linearity(Tester):
 
         # create new subfolder
         currentfolder, newfolder = azcam.utils.make_file_folder("linearity")
-        azcam.api.exposure.set_par("imagefolder", newfolder)
+        azcam.api.config.set_par("imagefolder", newfolder)
 
-        azcam.api.exposure.set_par(
-            "imageroot", "linearity."
-        )  # for automatic data analysis
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par(
-            "imageautoincrementsequencenumber", 1
-        )  # inc sequence numbers
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageroot", "linearity.")  # for automatic data analysis
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
         azcam.log(
-            "Taking Linearity bias: %s"
-            % os.path.basename(azcam.api.exposure.get_image_filename())
+            "Taking Linearity bias: %s" % os.path.basename(azcam.api.exposure.get_image_filename())
         )
         azcam.api.exposure.expose(0, "zero", "Linearity bias")
 
-        azcam.api.exposure.set_par("imagetype", self.exposure_type)
+        azcam.api.config.set_par("imagetype", self.exposure_type)
 
         # Try exposure_level to get ExposureTime
         if len(self.exposure_levels) > 0:  # exposure_levels specified
@@ -126,18 +119,14 @@ class Linearity(Tester):
         elif self.number_exposures != -1:  # max exposure time specified
             self.exposure_times = []  # reset
             MinExposure = float(self.max_exposure) / self.number_exposures
-            ExposureInc = (self.max_exposure - MinExposure) / max(
-                (self.number_exposures - 1), 1
-            )
+            ExposureInc = (self.max_exposure - MinExposure) / max((self.number_exposures - 1), 1)
             exptime = MinExposure
             for _ in range(self.number_exposures):
                 self.exposure_times.append(exptime)
                 exptime = exptime + ExposureInc
 
         else:
-            NumberExposures = len(
-                self.exposure_times
-            )  # ExposureTimes directly specified
+            NumberExposures = len(self.exposure_times)  # ExposureTimes directly specified
 
         # loop through exposures
         NumberExposures = len(self.exposure_times)
@@ -185,9 +174,7 @@ class Linearity(Tester):
             for filename in glob.glob(os.path.join(startingfolder, "*.fits")):
                 shutil.copy(filename, subfolder)
 
-            azcam.utils.curdir(
-                subfolder
-            )  # move for analysis folder - assume it already exists
+            azcam.utils.curdir(subfolder)  # move for analysis folder - assume it already exists
 
         else:
             pass
@@ -199,10 +186,7 @@ class Linearity(Tester):
         # Overscan correct all images
         SequenceNumber = StartingSequence
         if self.overscan_correct:
-            nextfile = (
-                os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                + ".fits"
-            )
+            nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
             loop = 0
             filelist = []
             azcam.log("Overscan correct images")
@@ -215,10 +199,7 @@ class Linearity(Tester):
                 azcam.fits.colbias(nextfile, fit_order=self.fit_order)
 
                 SequenceNumber = SequenceNumber + 1
-                nextfile = (
-                    os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                    + ".fits"
-                )
+                nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
                 loop += 1
 
         # "debias" correct with residuals after colbias
@@ -227,10 +208,7 @@ class Linearity(Tester):
             debiased = azcam.api.bias.debiased_filename
             biassub = "biassub.fits"
 
-            nextfile = (
-                os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                + ".fits"
-            )
+            nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
             loop = 0
             while os.path.exists(nextfile):
 
@@ -239,10 +217,7 @@ class Linearity(Tester):
                 os.rename(biassub, nextfile)
 
                 SequenceNumber = SequenceNumber + 1
-                nextfile = (
-                    os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                    + ".fits"
-                )
+                nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
                 loop += 1
 
         self.roi = azcam.utils.get_image_roi()
@@ -251,9 +226,7 @@ class Linearity(Tester):
         zerofilename = azcam.utils.make_image_filename(zerofilename)
         nextfile = zerofilename
 
-        self.NumExt, self.first_ext, self.last_ext = azcam.fits.get_extensions(
-            zerofilename
-        )
+        self.NumExt, self.first_ext, self.last_ext = azcam.fits.get_extensions(zerofilename)
 
         # read data from image files
         self.exptimes = []  # list of exposure times
@@ -279,10 +252,7 @@ class Linearity(Tester):
             SequenceNumber = SequenceNumber + 1
             if self.use_ptc_data:
                 SequenceNumber = SequenceNumber + 1
-            nextfile = (
-                os.path.join(currentfolder, rootname + "%04d" % SequenceNumber)
-                + ".fits"
-            )
+            nextfile = os.path.join(currentfolder, rootname + "%04d" % SequenceNumber) + ".fits"
 
         # find fit limits for linearity
         if self.fit_all_data:
@@ -410,27 +380,21 @@ class Linearity(Tester):
                 exptimes.append(t * self.exposure_timeScale)
         else:
             exptimes = xdata[fit_min:fit_max]
-        azcam.log(
-            "Fitting linearity from %.3f to %.3f seconds" % (exptimes[0], exptimes[-1])
-        )
+        azcam.log("Fitting linearity from %.3f to %.3f seconds" % (exptimes[0], exptimes[-1]))
 
         yfits = []
         polys = []
         for ext in range(self.first_ext, self.last_ext):  # extensions
             chan = ext - 1  # now an index into array, not ext number
             ydata = []
-            for i in range(
-                fit_min, fit_max
-            ):  # means list of extensions per each exp times
+            for i in range(fit_min, fit_max):  # means list of extensions per each exp times
                 means = self.means[i]
                 ydata.append(means[chan])  # ydata is list of means for each exension
 
             # generate line y values
             if self.use_weights:
                 weights = 1.0 / numpy.array(ydata)  # 1./variance
-                polycoeffs = numpy.polyfit(
-                    exptimes, ydata, 1, w=weights
-                )  # [slope,intercept]
+                polycoeffs = numpy.polyfit(exptimes, ydata, 1, w=weights)  # [slope,intercept]
             else:
                 polycoeffs = numpy.polyfit(exptimes, ydata, 1)  # [slope,intercept]
             polys.append(list(polycoeffs))  # to list for JSON
@@ -509,9 +473,7 @@ class Linearity(Tester):
             m = []
             for means in self.means:  # exp times
                 m.append(means[chan])
-            ax1.plot(
-                self.exptimes[MinPoint : MaxPoint + 1], m[MinPoint : MaxPoint + 1], "k-"
-            )
+            ax1.plot(self.exptimes[MinPoint : MaxPoint + 1], m[MinPoint : MaxPoint + 1], "k-")
             azcam.plot.plt.xlabel("Exposure Time [secs]", fontsize=self.small_font)
             azcam.plot.plt.ylim(0)
             ax1.grid(1)
@@ -575,16 +537,12 @@ class Linearity(Tester):
             lines.append(s)
 
         lines.append(f"Max residual value [%]:   {self.max_residual:0.01f}  ")
-        lines.append(
-            f"Max allowed residual [%]: {100.0 * self.max_residual_linearity:0.01f}  "
-        )
+        lines.append(f"Max allowed residual [%]: {100.0 * self.max_residual_linearity:0.01f}  ")
         lines.append(f"Minimum fit limit [DN]: {self.linearity_fit_min}  ")
         lines.append(f"Maximum fit limit [DN]: {self.linearity_fit_max}  ")
         lines.append("")
 
-        lines.append(
-            f"![Linearity and residuals Plot]({os.path.abspath(self.linearity_plot)})  "
-        )
+        lines.append(f"![Linearity and residuals Plot]({os.path.abspath(self.linearity_plot)})  ")
         lines.append("*Linearity and residuals Plot.*  ")
 
         # Make report files

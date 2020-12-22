@@ -42,9 +42,7 @@ class DetCal(Tester):
         self.system_gain = []
 
         self.wavelengths = []  # list of list of wavelengths to calibrate
-        self.exposure_times = (
-            {}
-        )  # list of dictionaries of {wavelength:initial guess et}
+        self.exposure_times = {}  # list of dictionaries of {wavelength:initial guess et}
         self.mean_counts = {}  # list of dictionaries of {wavelength:Counts/Sec}
         self.mean_electrons = {}  # list of dictionaries of {wavelength:Electrons/Sec}
 
@@ -66,15 +64,13 @@ class DetCal(Tester):
             if os.path.exists("detcal"):
                 shutil.rmtree("detcal")
         startingfolder, subfolder = azcam.utils.make_file_folder("detcal")
-        azcam.api.exposure.set_par("imagefolder", subfolder)
+        azcam.api.config.set_par("imagefolder", subfolder)
         azcam.utils.curdir(subfolder)
 
-        azcam.api.exposure.set_par(
-            "imageincludesequencenumber", 1
-        )  # don't use sequence numbers
-        azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-        azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
-        azcam.api.exposure.set_par("imageoverwrite", 1)
+        azcam.api.config.set_par("imageincludesequencenumber", 1)  # don't use sequence numbers
+        azcam.api.config.set_par("imageautoname", 0)  # manually set name
+        azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
+        azcam.api.config.set_par("imageoverwrite", 1)
 
         # get gain and ROI
         self.system_gain = azcam.api.gain.get_system_gain()
@@ -115,7 +111,7 @@ class DetCal(Tester):
             except Exception:
                 et = 1.0
             while doloop:
-                azcam.api.exposure.set_par("imagetype", self.exposure_type)
+                azcam.api.config.set_par("imagetype", self.exposure_type)
                 azcam.log(f"Taking flat for {et:0.3f} seconds")
                 flatfilename = azcam.api.exposure.get_image_filename()
                 azcam.api.exposure.expose(et, self.exposure_type, "detcal flat")
@@ -124,9 +120,7 @@ class DetCal(Tester):
                 bin1 = int(azcam.fits.get_keyword(flatfilename, "CCDBIN1"))
                 bin2 = int(azcam.fits.get_keyword(flatfilename, "CCDBIN2"))
                 binning = bin1 * bin2
-                flatmean = numpy.array(azcam.fits.mean(flatfilename)) - numpy.array(
-                    self.zero_mean
-                )
+                flatmean = numpy.array(azcam.fits.mean(flatfilename)) - numpy.array(self.zero_mean)
                 flatmean = flatmean.mean()
                 azcam.log("Mean signal at {wave} nm is {flatmean:0.0f} DN")
 
@@ -138,9 +132,7 @@ class DetCal(Tester):
                     continue
 
                 self.mean_counts[wave] = flatmean / et / binning
-                self.mean_electrons[wave] = self.mean_counts[wave] * numpy.array(
-                    self.system_gain
-                )
+                self.mean_electrons[wave] = self.mean_counts[wave] * numpy.array(self.system_gain)
 
                 self.mean_counts[wave] = self.mean_counts[wave].mean()
                 self.mean_electrons[wave] = self.mean_electrons[wave].mean()

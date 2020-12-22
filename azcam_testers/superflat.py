@@ -70,9 +70,7 @@ class Superflat(Tester):
 
             meanelectrons = azcam.api.detcal.mean_electrons
 
-            self.exposure_times = (
-                numpy.array(self.exposure_levels) / meanelectrons[wave]
-            )
+            self.exposure_times = numpy.array(self.exposure_levels) / meanelectrons[wave]
         elif len(self.exposure_times) > 0:
             azcam.log("Using ExposureTimes")
         else:
@@ -80,21 +78,15 @@ class Superflat(Tester):
 
         for setnum, exposuretime in enumerate(self.exposure_times):
 
-            azcam.api.exposure.set_par(
-                "imageroot", "superflat."
-            )  # for automatic data analysis
-            azcam.api.exposure.set_par(
-                "imageincludesequencenumber", 1
-            )  # use sequence numbers
-            azcam.api.exposure.set_par("imageautoname", 0)  # manually set name
-            azcam.api.exposure.set_par(
-                "imageautoincrementsequencenumber", 1
-            )  # inc sequence numbers
-            azcam.api.exposure.set_par("imagetest", 0)  # turn off TestImage
+            azcam.api.config.set_par("imageroot", "superflat.")  # for automatic data analysis
+            azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+            azcam.api.config.set_par("imageautoname", 0)  # manually set name
+            azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+            azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
             # create new subfolder
             currentfolder, newfolder = azcam.utils.make_file_folder("superflat", 1, 1)
-            azcam.api.exposure.set_par("imagefolder", newfolder)
+            azcam.api.config.set_par("imagefolder", newfolder)
 
             for loop in range(self.number_images_acquire[setnum]):
                 exposuretime = self.exposure_times[setnum]
@@ -103,9 +95,7 @@ class Superflat(Tester):
                     "Taking SuperFlat image %d of %d for %.3f seconds"
                     % (loop + 1, self.number_images_acquire[setnum], exposuretime)
                 )
-                azcam.api.exposure.expose(
-                    exposuretime, self.exposure_type, "superflat flat"
-                )
+                azcam.api.exposure.expose(exposuretime, self.exposure_type, "superflat flat")
 
             # finish this set
             azcam.utils.restore_imagepars(impars, currentfolder)
@@ -171,9 +161,7 @@ class Superflat(Tester):
                 azcam.fits.colbias(nextfile, fit_order=self.fit_order)
 
             SequenceNumber = SequenceNumber + 1
-            nextfile = (
-                os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
-            )
+            nextfile = os.path.join(subfolder, rootname + "%04d" % SequenceNumber) + ".fits"
             loop += 1
 
         # median combine all images
@@ -212,9 +200,7 @@ class Superflat(Tester):
             shutil.copy(self.superflat_filename, startingfolder)
             shutil.copy(self.scaled_superflat_filename, startingfolder)
             shutil.copy("superflatimage.png", startingfolder)
-            self.superflat_filename = os.path.join(
-                startingfolder, self.superflat_filename
-            )
+            self.superflat_filename = os.path.join(startingfolder, self.superflat_filename)
             self.scaled_superflat_filename = os.path.join(
                 startingfolder, self.scaled_superflat_filename
             )

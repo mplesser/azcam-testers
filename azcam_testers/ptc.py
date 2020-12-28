@@ -110,7 +110,7 @@ class Ptc(Tester):
 
         # bias image
         azcam.api.config.set_par("imagetype", "zero")
-        filename = os.path.basename(azcam.api.exposure.get_image_filename())
+        filename = os.path.basename(azcam.api.exposure.get_filename())
         azcam.log("Taking PTC bias: %s" % filename)
 
         # measure the reference diode current with shutter closed
@@ -155,7 +155,7 @@ class Ptc(Tester):
 
         for pair, ExposureTime in enumerate(self.exposure_times):
 
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
             azcam.log(
                 "Taking PTC pair %d of %d for %.3f secs" % (pair + 1, number_pairs, ExposureTime)
             )
@@ -171,7 +171,7 @@ class Ptc(Tester):
             if self.flush_before_exposure:
                 azcam.api.exposure.test()
             azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 1")
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
 
             # measure the reference diode current
             if self.use_ref_diode:
@@ -424,7 +424,12 @@ class Ptc(Tester):
         azcam.plot.move_window(fignum_ptc)
         fig_ptc.suptitle("Photon Transfer Curve", fontsize=large_font)
         fig_ptc.subplots_adjust(
-            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
+            left=pleft,
+            bottom=pbottom,
+            right=pright,
+            top=ptop,
+            wspace=wspace,
+            hspace=hspace,
         )
         fig_ptc = azcam.plot.plt.subplot(1, 1, 1)
         fig_ptc.grid(1)
@@ -447,7 +452,12 @@ class Ptc(Tester):
         azcam.plot.move_window(fignum_gain)
         fig_gain.suptitle("System Gain", fontsize=large_font)
         fig_gain.subplots_adjust(
-            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
+            left=pleft,
+            bottom=pbottom,
+            right=pright,
+            top=ptop,
+            wspace=wspace,
+            hspace=hspace,
         )
         fig_gain = azcam.plot.plt.subplot(1, 1, 1)
         fig_gain.grid(1)
@@ -485,22 +495,34 @@ class Ptc(Tester):
             if logplot:
                 if self.style1 == "":
                     azcam.plot.plt.loglog(
-                        m, sdev, plotstyle[chan % self.num_chans], markersize=marksize,
+                        m,
+                        sdev,
+                        plotstyle[chan % self.num_chans],
+                        markersize=marksize,
                     )
                 else:
                     azcam.plot.plt.loglog(
-                        m, sdev, self.style1, markersize=marksize,
+                        m,
+                        sdev,
+                        self.style1,
+                        markersize=marksize,
                     )
                 azcam.plot.plt.ylim(1)
                 azcam.plot.plt.xlim(1)
             else:
                 if self.style1 == "":
                     azcam.plot.plt.plot(
-                        m, var, plotstyle[chan % self.num_chans], markersize=marksize,
+                        m,
+                        var,
+                        plotstyle[chan % self.num_chans],
+                        markersize=marksize,
                     )
                 else:
                     azcam.plot.plt.plot(
-                        m, var, self.style1, markersize=marksize,
+                        m,
+                        var,
+                        self.style1,
+                        markersize=marksize,
                     )
                 azcam.plot.plt.ylim(0)
                 azcam.plot.plt.xlim(0, 65000)
@@ -509,7 +531,10 @@ class Ptc(Tester):
             if self.min_fullwell != -1:
                 ax = azcam.plot.plt.gca()
                 azcam.plot.plt.plot(
-                    [self.min_fullwell, self.min_fullwell], ax.get_ylim(), "r--", linewidth=0.7,
+                    [self.min_fullwell, self.min_fullwell],
+                    ax.get_ylim(),
+                    "r--",
+                    linewidth=0.7,
                 )
 
             # line fit
@@ -543,11 +568,17 @@ class Ptc(Tester):
             azcam.plot.plt.figure(fignum_gain)
             if self.style2 == "":
                 azcam.plot.plt.plot(
-                    m, g, plotstyle[chan % self.num_chans], markersize=marksize,
+                    m,
+                    g,
+                    plotstyle[chan % self.num_chans],
+                    markersize=marksize,
                 )
             else:
                 azcam.plot.plt.plot(
-                    m, g, self.style2, markersize=marksize,
+                    m,
+                    g,
+                    self.style2,
+                    markersize=marksize,
                 )
 
             # set axes

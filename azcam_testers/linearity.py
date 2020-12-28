@@ -86,9 +86,7 @@ class Linearity(Tester):
         azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # bias image
-        azcam.log(
-            "Taking Linearity bias: %s" % os.path.basename(azcam.api.exposure.get_image_filename())
-        )
+        azcam.log("Taking Linearity bias: %s" % os.path.basename(azcam.api.exposure.get_filename()))
         azcam.api.exposure.expose(0, "zero", "Linearity bias")
 
         azcam.api.config.set_par("imagetype", self.exposure_type)
@@ -139,7 +137,7 @@ class Linearity(Tester):
                     exp + 1,
                     NumberExposures,
                     exptime,
-                    os.path.basename(azcam.api.exposure.get_image_filename()),
+                    os.path.basename(azcam.api.exposure.get_filename()),
                 )
             )
             azcam.api.exposure.expose(exptime, self.exposure_type, "Linearity flat")

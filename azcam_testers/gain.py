@@ -130,24 +130,24 @@ class Gain(Tester):
 
             # bias image
             azcam.api.config.set_par("imagetype", "zero")
-            zerofilename = azcam.api.exposure.get_image_filename()
+            zerofilename = azcam.api.exposure.get_filename()
             self.image_zero = zerofilename
             azcam.log("Taking bias exposure")
             azcam.api.exposure.expose(0, "zero", "PTC bias")
 
             # take dark
             if self.include_dark_images:
-                self.dark_frame = azcam.api.exposure.get_image_filename()
+                self.dark_frame = azcam.api.exposure.get_filename()
                 azcam.api.exposure.expose(ExposureTime, "dark", "PTC dark")
 
             # take flats
             azcam.api.config.set_par("imagetype", self.exposure_type)
             azcam.log(f"Taking two flats for {ExposureTime:0.3f} seconds")
-            flat1filename = azcam.api.exposure.get_image_filename()
+            flat1filename = azcam.api.exposure.get_filename()
             self.image_flat1 = flat1filename
             azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 1")
             azcam.log("Image 1 finished")
-            flat2filename = azcam.api.exposure.get_image_filename()
+            flat2filename = azcam.api.exposure.get_filename()
             self.image_flat2 = flat2filename
             azcam.api.exposure.expose(ExposureTime, self.exposure_type, "PTC frame 2")
             azcam.log("Image 2 finished")

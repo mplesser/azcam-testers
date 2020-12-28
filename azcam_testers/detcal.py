@@ -113,7 +113,7 @@ class DetCal(Tester):
             while doloop:
                 azcam.api.config.set_par("imagetype", self.exposure_type)
                 azcam.log(f"Taking flat for {et:0.3f} seconds")
-                flatfilename = azcam.api.exposure.get_image_filename()
+                flatfilename = azcam.api.exposure.get_filename()
                 azcam.api.exposure.expose(et, self.exposure_type, "detcal flat")
 
                 # get counts

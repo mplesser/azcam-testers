@@ -68,7 +68,7 @@ class Prnu(Tester):
 
         # bias image
         azcam.api.config.set_par("imagetype", "zero")
-        filename = os.path.basename(azcam.api.exposure.get_image_filename())
+        filename = os.path.basename(azcam.api.exposure.get_filename())
         azcam.log("Taking PRNU bias: %s" % filename)
         azcam.api.exposure.expose(0, "zero", "PRNU bias")
 
@@ -84,7 +84,7 @@ class Prnu(Tester):
                 wave = azcam.api.instrument.get_wavelength()
                 wave = int(wave)
                 azcam.log(f"Current wavelength: {wave}")
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
             azcam.log(f"Taking PRNU image for {exposuretime:.3f} seconds at {wavelength:.1f} nm")
             azcam.api.exposure.expose(
                 exposuretime, self.exposure_type, f"PRNU image {wavelength:.1f} nm"
@@ -190,7 +190,8 @@ class Prnu(Tester):
             if self.use_edge_mask:
                 if azcam.api.defects.valid:
                     self.MaskedImage = numpy.ma.masked_where(
-                        azcam.api.defects.defects_mask, prnuimage.buffer,
+                        azcam.api.defects.defects_mask,
+                        prnuimage.buffer,
                     )
                 else:
                     azcam.api.defects.make_edge_mask(
@@ -216,7 +217,11 @@ class Prnu(Tester):
 
             self.grades[wavelength] = GRADE
 
-            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (wavelength, prnu * 100, GRADE,)
+            s = "PRNU at %7.1f nm is %5.1f%%, Grade = %s" % (
+                wavelength,
+                prnu * 100,
+                GRADE,
+            )
             azcam.log(s)
 
             SequenceNumber = SequenceNumber + 1

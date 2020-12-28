@@ -122,9 +122,7 @@ class Qe(Tester):
 
         # take bias image
         azcam.api.config.set_par("imageroot", "qe.")
-        azcam.log(
-            "Taking bias image %s..." % os.path.basename(azcam.api.exposure.get_image_filename())
-        )
+        azcam.log("Taking bias image %s..." % os.path.basename(azcam.api.exposure.get_filename()))
 
         # measure the reference diode current with shutter closed
         if self.use_ref_diode:
@@ -147,7 +145,11 @@ class Qe(Tester):
 
             azcam.log(
                 "Taking %d nm QE image for %.3f seconds: %s..."
-                % (wave, etime, os.path.basename(azcam.api.exposure.get_image_filename()),)
+                % (
+                    wave,
+                    etime,
+                    os.path.basename(azcam.api.exposure.get_filename()),
+                )
             )
 
             # make sure at proper wavelength
@@ -563,7 +565,12 @@ class Qe(Tester):
                 fontsize=bigfont,
             )
         fig.subplots_adjust(
-            left=pleft, bottom=pbottom, right=pright, top=ptop, wspace=wspace, hspace=hspace,
+            left=pleft,
+            bottom=pbottom,
+            right=pright,
+            top=ptop,
+            wspace=wspace,
+            hspace=hspace,
         )
         ax = azcam.plot.plt.gca()
         ax.grid(1)

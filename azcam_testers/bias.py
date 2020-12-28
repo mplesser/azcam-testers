@@ -61,7 +61,7 @@ class Bias(Tester):
         # take bias images
         azcam.api.config.set_par("imagetype", "zero")  # for get_image_filename()
         for i in range(self.number_images_acquire):
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
             azcam.log(f"Taking bias image {i + 1}/{self.number_images_acquire}: {filename}")
             azcam.api.exposure.expose(0, "zero", "bias image")
             if i < self.number_images_acquire - 1:

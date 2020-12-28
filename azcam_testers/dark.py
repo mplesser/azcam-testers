@@ -99,7 +99,7 @@ class Dark(Tester):
 
             # pre-dark bias
             azcam.api.config.set_par("imagetype", "dark")  # for GetFilename
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
             azcam.log(f"Taking pre-dark image: {filename}")
             temp = azcam.api.tempcon.get_temperatures()
             azcam.log(f"Current temperatures: {temp}")
@@ -107,7 +107,7 @@ class Dark(Tester):
 
             # take dark image
             azcam.api.config.set_par("imagetype", "dark")
-            filename = os.path.basename(azcam.api.exposure.get_image_filename())
+            filename = os.path.basename(azcam.api.exposure.get_filename())
             azcam.log(
                 f"Taking dark image {imgnum + 1} for {self.exposure_time:0.3f} seconds: {filename}"
             )
@@ -240,7 +240,8 @@ class Dark(Tester):
         if self.use_edge_mask:
             if azcam.api.defects.valid:
                 self.MaskedImage = numpy.ma.masked_where(
-                    azcam.api.defects.defects_mask, self.darkimage.buffer,
+                    azcam.api.defects.defects_mask,
+                    self.darkimage.buffer,
                 )
             else:
                 azcam.api.defects.make_edge_mask(self.darkimage.buffer)
@@ -251,7 +252,9 @@ class Dark(Tester):
         # optionally mask bright pixels
         if self.bright_pixel_reject != -1:
             self.MaskedImage = numpy.ma.masked_where(
-                self.MaskedImage > self.bright_pixel_reject, self.MaskedImage, copy=False,
+                self.MaskedImage > self.bright_pixel_reject,
+                self.MaskedImage,
+                copy=False,
             )
             self.num_rejected_bright_pixels = totalpixels - numpy.ma.count(self.MaskedImage)
             azcam.log(f"Number of rejected bright pixels: {self.num_rejected_bright_pixels}")

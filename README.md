@@ -12,5 +12,3 @@ See https://mplesser.github.io/azcam-testers/
 Download from github: https://github.com/mplesser/azcam-testers.git.
 
 ## Startup and configuration
-
-

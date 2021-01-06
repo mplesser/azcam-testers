@@ -42,7 +42,9 @@ class DetCal(Tester):
         self.system_gain = []
 
         self.wavelengths = []  # list of list of wavelengths to calibrate
-        self.exposure_times = {}  # list of dictionaries of {wavelength:initial guess et}
+        self.exposure_times = (
+            {}
+        )  # list of dictionaries of {wavelength:initial guess et}
         self.mean_counts = {}  # list of dictionaries of {wavelength:Counts/Sec}
         self.mean_electrons = {}  # list of dictionaries of {wavelength:Electrons/Sec}
 
@@ -67,7 +69,9 @@ class DetCal(Tester):
         azcam.api.config.set_par("imagefolder", subfolder)
         azcam.utils.curdir(subfolder)
 
-        azcam.api.config.set_par("imageincludesequencenumber", 1)  # don't use sequence numbers
+        azcam.api.config.set_par(
+            "imageincludesequencenumber", 1
+        )  # don't use sequence numbers
         azcam.api.config.set_par("imageautoname", 0)  # manually set name
         azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
         azcam.api.config.set_par("imageoverwrite", 1)
@@ -120,7 +124,9 @@ class DetCal(Tester):
                 bin1 = int(azcam.fits.get_keyword(flatfilename, "CCDBIN1"))
                 bin2 = int(azcam.fits.get_keyword(flatfilename, "CCDBIN2"))
                 binning = bin1 * bin2
-                flatmean = numpy.array(azcam.fits.mean(flatfilename)) - numpy.array(self.zero_mean)
+                flatmean = numpy.array(azcam.fits.mean(flatfilename)) - numpy.array(
+                    self.zero_mean
+                )
                 flatmean = flatmean.mean()
                 azcam.log("Mean signal at {wave} nm is {flatmean:0.0f} DN")
 
@@ -132,7 +138,9 @@ class DetCal(Tester):
                     continue
 
                 self.mean_counts[wave] = flatmean / et / binning
-                self.mean_electrons[wave] = self.mean_counts[wave] * numpy.array(self.system_gain)
+                self.mean_electrons[wave] = self.mean_counts[wave] * numpy.array(
+                    self.system_gain
+                )
 
                 self.mean_counts[wave] = self.mean_counts[wave].mean()
                 self.mean_electrons[wave] = self.mean_electrons[wave].mean()

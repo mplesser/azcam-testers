@@ -48,10 +48,16 @@ class PocketPump(Tester):
         impars = {}
         azcam.utils.save_imagepars(impars)
 
-        azcam.api.config.set_par("imageroot", "pocketpump.")  # for automatic data analysis
-        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par(
+            "imageroot", "pocketpump."
+        )  # for automatic data analysis
+        azcam.api.config.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
         azcam.api.config.set_par("imageautoname", 0)  # manually set name
-        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
         azcam.api.config.set_par("imagetest", 0)
 
         # create and move to new subfolder
@@ -84,7 +90,9 @@ class PocketPump(Tester):
 
         # setup exposure
         azcam.log("Pocketpump setup")
-        azcam.api.exposure.begin_exposure(self.exposure_time, self.exposure_type, "pocket pump")
+        azcam.api.exposure.begin_exposure(
+            self.exposure_time, self.exposure_type, "pocket pump"
+        )
 
         # integrate
         azcam.log("Pocketpump integration")
@@ -147,10 +155,16 @@ class PocketPump(Tester):
         impars = {}
         azcam.utils.save_imagepars(impars)
 
-        azcam.api.config.set_par("imageroot", "pocketpump.")  # for automatic data analysis
-        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par(
+            "imageroot", "pocketpump."
+        )  # for automatic data analysis
+        azcam.api.config.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
         azcam.api.config.set_par("imageautoname", 0)  # manually set name
-        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
         azcam.api.config.set_par("imagetest", 0)
 
         # create and move to new subfolder
@@ -208,7 +222,9 @@ class PocketPump(Tester):
         # take a reference flat of same time
         azcam.log("Taking non-pumped reference exposure")
         try:
-            azcam.api.exposure.expose(et, self.exposure_type, "pocket pump reference flat")
+            azcam.api.exposure.expose(
+                et, self.exposure_type, "pocket pump reference flat"
+            )
 
         except Exception as message:
             azcam.utils.restore_imagepars(impars, currentfolder)

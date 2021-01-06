@@ -54,9 +54,13 @@ class Ramp(Tester):
         azcam.api.exposure.test()
 
         azcam.api.config.set_par("imageroot", "ramp.")  # for automatic data analysis
-        azcam.api.config.set_par("imageincludesequencenumber", 1)  # use sequence numbers
+        azcam.api.config.set_par(
+            "imageincludesequencenumber", 1
+        )  # use sequence numbers
         azcam.api.config.set_par("imageautoname", 0)  # manually set name
-        azcam.api.config.set_par("imageautoincrementsequencenumber", 1)  # inc sequence numbers
+        azcam.api.config.set_par(
+            "imageautoincrementsequencenumber", 1
+        )  # inc sequence numbers
         azcam.api.config.set_par("imagetest", 0)  # turn off TestImage
 
         # get bias image
@@ -190,7 +194,9 @@ class Ramp(Tester):
             sdevs = []
             for row in range(nrows):
                 roi = [self.first_col - 1, self.last_col, row, row + 1]
-                sdev = data_ffci[ext][roi[2] : roi[3]][roi[0] : roi[1]].std() / math.sqrt(2.0)
+                sdev = data_ffci[ext][roi[2] : roi[3]][
+                    roi[0] : roi[1]
+                ].std() / math.sqrt(2.0)
                 fmean = data_mean[ext][roi[2] : roi[3]][roi[0] : roi[1]].mean()
                 sdevs.append(sdev)
                 means.append(fmean)

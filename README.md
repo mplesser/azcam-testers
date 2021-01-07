@@ -6,9 +6,8 @@
 
 See https://mplesser.github.io/azcam-testers/
 
-
 ## Installation
 
-Download from github: https://github.com/mplesser/azcam-testers.git.
+`pip install azam-testers`
 
-## Startup and configuration
+Or download from github: https://github.com/mplesser/azcam-testers.git.

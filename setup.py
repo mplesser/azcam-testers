@@ -15,7 +15,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="azcam-testers",
-    version="21.1.2",
+    version="21.1.3",
     description="azcam extension for sensor characterization",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -25,4 +25,5 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=requirements,
+    include_package_data=True,
 )
